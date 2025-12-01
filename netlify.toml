@@ -1,0 +1,20 @@
+# Configurazione Netlify per Next.js
+# NOTA: Per Next.js 16, è consigliato usare il plugin ufficiale @netlify/plugin-nextjs
+# Installalo dal dashboard Netlify: Site settings > Build & deploy > Plugins
+
+[build]
+  base = "apps/web"
+  command = "npm install && npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Next.js gestisce le route internamente, ma queste redirects assicurano
+# che le route client-side funzionino correttamente
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
