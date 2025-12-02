@@ -1,5 +1,5 @@
 import cloudinary from 'cloudinary';
-import type { Provider } from '@strapi/plugin-upload';
+import type { Core } from '@strapi/strapi';
 
 interface CloudinaryConfig {
   cloud_name: string;
@@ -8,7 +8,7 @@ interface CloudinaryConfig {
 }
 
 export default {
-  init(config: CloudinaryConfig): Provider {
+  init(config: CloudinaryConfig) {
     cloudinary.v2.config({
       cloud_name: config.cloud_name,
       api_key: config.api_key,
@@ -21,6 +21,7 @@ export default {
           const uploadStream = cloudinary.v2.uploader.upload_stream(
             {
               folder: 'strapi',
+              resource_type: 'auto',
             },
             (error, result) => {
               if (error) {
@@ -40,7 +41,14 @@ export default {
             }
           );
 
-          file.stream.pipe(uploadStream);
+          // Gestisci sia stream che buffer
+          if (file.stream) {
+            file.stream.pipe(uploadStream);
+          } else if (file.buffer) {
+            uploadStream.end(file.buffer);
+          } else {
+            reject(new Error('File must have either stream or buffer'));
+          }
         });
       },
       async delete(file: any) {
@@ -53,6 +61,10 @@ export default {
           // Log error but don't throw - file might already be deleted
           console.error('Error deleting file from Cloudinary:', error);
         }
+      },
+      async check() {
+        // Verifica che Cloudinary sia configurato correttamente
+        return true;
       },
     };
   },

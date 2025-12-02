@@ -1,4 +1,5 @@
 import type { Core } from '@strapi/strapi';
+import cloudinaryProvider from './extensions/upload/providers/cloudinary';
 
 export default {
   /**
@@ -7,7 +8,10 @@ export default {
    *
    * This gives you an opportunity to extend code.
    */
-  register(/* { strapi }: { strapi: Core.Strapi } */) {},
+  register({ strapi }: { strapi: Core.Strapi }) {
+    // Registra il provider Cloudinary personalizzato
+    strapi.plugin('upload').provider.register('cloudinary', cloudinaryProvider);
+  },
 
   /**
    * An asynchronous bootstrap function that runs before
