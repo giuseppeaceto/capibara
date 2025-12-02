@@ -63,15 +63,16 @@ export default function ContentCard({ entry }: { entry: ContentTile }) {
   const CardContent = (
     <article className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-gradient-to-br p-6 shadow-[0_25px_80px_rgba(0,0,0,0.35)] transition hover:-translate-y-1 hover:border-white/25 cursor-pointer">
       <div className={`relative h-40 rounded-2xl overflow-hidden bg-gradient-to-r ${entry.accent}`}>
-        {cardImageUrl && (
+        {cardImageUrl ? (
           <Image
             src={cardImageUrl}
             alt={entry.imageAlt || entry.title}
             fill
             className="object-cover"
             sizes="(min-width: 1024px) 320px, (min-width: 768px) 50vw, 100vw"
+            unoptimized={cardImageUrl.includes('localhost') || cardImageUrl.includes('127.0.0.1')}
           />
-        )}
+        ) : null}
         {/* overlay leggera per mantenere leggibilità e mood del brand */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
       </div>

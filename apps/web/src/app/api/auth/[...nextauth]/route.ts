@@ -9,6 +9,7 @@ const { handlers } = NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true, // Required for NextAuth v5 in production
   session: {
     strategy: "jwt",
   },
@@ -25,6 +26,10 @@ const { handlers } = NextAuth({
       }
       return session;
     },
+  },
+  pages: {
+    signIn: "/login",
+    error: "/login",
   },
 });
 
