@@ -17,15 +17,15 @@ export default async function PodcastPage({
     <MainLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-4xl font-semibold text-white">Podcast</h1>
-          <p className="mt-2 text-zinc-400">
+          <h1 className="page-title text-4xl font-semibold">Podcast</h1>
+          <p className="body-text mt-2">
             Tutti gli episodi podcast di VentiQuaranta
           </p>
         </div>
 
         {episodes.length === 0 ? (
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900/80 p-12 text-center">
-            <p className="text-zinc-400">Nessun podcast disponibile al momento.</p>
+          <div className="content-box p-12 text-center">
+            <p className="body-text">Nessun podcast disponibile al momento.</p>
           </div>
         ) : (
           <>
@@ -63,7 +63,7 @@ export default async function PodcastPage({
                 {pagination.page > 1 && (
                   <Link
                     href={`/podcast?page=${pagination.page - 1}`}
-                    className="rounded-full border border-white/10 px-6 py-2 text-sm text-zinc-300 transition hover:border-white/40 hover:text-white"
+                    className="pagination-button"
                   >
                     ← Precedente
                   </Link>
@@ -74,7 +74,7 @@ export default async function PodcastPage({
                 {pagination.page < pagination.pageCount && (
                   <Link
                     href={`/podcast?page=${pagination.page + 1}`}
-                    className="rounded-full border border-white/10 px-6 py-2 text-sm text-zinc-300 transition hover:border-white/40 hover:text-white"
+                    className="pagination-button"
                   >
                     Successiva →
                   </Link>

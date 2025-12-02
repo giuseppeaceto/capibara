@@ -17,15 +17,15 @@ export default async function NewsletterPage({
     <MainLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-4xl font-semibold text-white">Newsletter</h1>
-          <p className="mt-2 text-zinc-400">
+          <h1 className="page-title text-4xl font-semibold">Newsletter</h1>
+          <p className="body-text mt-2">
             Tutte le edizioni della newsletter premium
           </p>
         </div>
 
         {issues.length === 0 ? (
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900/80 p-12 text-center">
-            <p className="text-zinc-400">Nessuna newsletter disponibile al momento.</p>
+          <div className="content-box p-12 text-center">
+            <p className="body-text">Nessuna newsletter disponibile al momento.</p>
           </div>
         ) : (
           <>
@@ -63,7 +63,7 @@ export default async function NewsletterPage({
                 {pagination.page > 1 && (
                   <Link
                     href={`/newsletter?page=${pagination.page - 1}`}
-                    className="rounded-full border border-white/10 px-6 py-2 text-sm text-zinc-300 transition hover:border-white/40 hover:text-white"
+                    className="pagination-button"
                   >
                     ← Precedente
                   </Link>
@@ -74,7 +74,7 @@ export default async function NewsletterPage({
                 {pagination.page < pagination.pageCount && (
                   <Link
                     href={`/newsletter?page=${pagination.page + 1}`}
-                    className="rounded-full border border-white/10 px-6 py-2 text-sm text-zinc-300 transition hover:border-white/40 hover:text-white"
+                    className="pagination-button"
                   >
                     Successiva →
                   </Link>

@@ -21,22 +21,22 @@ export default async function PodcastEpisodePage({
       <div className="space-y-8">
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-zinc-400 transition hover:text-white"
+          className="back-link"
         >
           ← Torna alla home
         </Link>
 
         <article className="space-y-8">
           <div>
-            <div className="mb-4 flex items-center gap-2 text-sm uppercase tracking-wide text-zinc-400">
+            <div className="mb-4 flex items-center gap-2 text-sm uppercase tracking-wide meta-text">
               <span>Podcast</span>
               {episode.isPremium && (
-                <span className="rounded-full bg-amber-400/10 px-3 py-0.5 text-xs text-amber-200">
+                <span className="locked-badge">
                   Abbonati
                 </span>
               )}
             </div>
-            <h1 className="text-4xl font-semibold leading-tight text-white">
+            <h1 className="page-title text-4xl font-semibold leading-tight">
               {episode.title}
             </h1>
             <div className="mt-4 flex flex-wrap items-center gap-4 text-sm uppercase tracking-wide text-zinc-500">
@@ -58,7 +58,7 @@ export default async function PodcastEpisodePage({
           </div>
 
           {episode.summary && (
-            <p className="text-lg text-zinc-300">{episode.summary}</p>
+            <p className="article-excerpt">{episode.summary}</p>
           )}
 
           <PodcastPlatformButtons

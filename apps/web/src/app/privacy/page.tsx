@@ -6,10 +6,10 @@ export default function PrivacyPage() {
       <div className="space-y-10">
         <section className="space-y-4">
           <p className="eyebrow eyebrow--page">Privacy</p>
-          <h1 className="text-3xl font-semibold text-white">
+          <h1 className="page-title text-3xl font-semibold">
             Informativa sul trattamento dei dati personali
           </h1>
-          <p className="max-w-3xl text-sm text-zinc-300">
+          <p className="body-text-sm max-w-3xl">
             Questa pagina descrive in modo sintetico come Capibara tratta i dati
             personali delle persone che utilizzano il sito e i servizi collegati.
             È un testo informativo, non sostituisce una consulenza legale e potrà
@@ -18,8 +18,8 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-white">Titolare del trattamento</h2>
-          <p className="text-sm text-zinc-300">
+          <h2 className="page-heading text-xl font-semibold">Titolare del trattamento</h2>
+          <p className="body-text-sm">
             Il titolare del trattamento è il collettivo editoriale Capibara. I
             riferimenti aggiornati per contattarci (email e canali ufficiali)
             saranno sempre indicati nelle pagine di contatto del sito.
@@ -27,10 +27,10 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="page-heading text-xl font-semibold">
             Quali dati raccogliamo
           </h2>
-          <ul className="space-y-2 text-sm text-zinc-300">
+          <ul className="body-text-sm space-y-2">
             <li>
               • Dati di navigazione di base (log tecnici, IP, user agent) necessari al
               funzionamento dell&apos;applicazione e alla sicurezza.
@@ -47,10 +47,10 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="page-heading text-xl font-semibold">
             Perché trattiamo questi dati
           </h2>
-          <p className="text-sm text-zinc-300">
+          <p className="body-text-sm">
             Trattiamo i dati solo per fornire il servizio richiesto: gestione
             dell&apos;account, erogazione di newsletter, gestione degli
             abbonamenti, analisi tecnica del funzionamento del sito. Non vendiamo
@@ -59,8 +59,8 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-white">Base giuridica</h2>
-          <p className="text-sm text-zinc-300">
+          <h2 className="page-heading text-xl font-semibold">Base giuridica</h2>
+          <p className="body-text-sm">
             A seconda dei casi, il trattamento si basa sul consenso,
             sull&apos;esecuzione di un contratto (es. abbonamento) o sul legittimo
             interesse a garantire sicurezza, prevenire abusi e migliorare il
@@ -69,8 +69,8 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-white">Diritti delle persone</h2>
-          <p className="text-sm text-zinc-300">
+          <h2 className="page-heading text-xl font-semibold">Diritti delle persone</h2>
+          <p className="body-text-sm">
             Puoi chiederci in qualsiasi momento di accedere ai dati che ti
             riguardano, rettificarli, cancellarli (nei limiti in cui non siano
             necessari per obblighi di legge), limitare il trattamento o opporti a
@@ -80,10 +80,10 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="page-heading text-xl font-semibold">
             Dati conservati e aggiornamenti dell&apos;informativa
           </h2>
-          <p className="text-sm text-zinc-300">
+          <p className="body-text-sm">
             Conserviamo i dati per il tempo necessario a fornire il servizio e
             adempiere agli obblighi di legge. Se modificheremo modalità o finalità
             del trattamento aggiorneremo questa pagina, indicando la data di

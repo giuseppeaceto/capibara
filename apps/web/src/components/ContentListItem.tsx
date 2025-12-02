@@ -24,24 +24,24 @@ export default function ContentListItem({
   const href = getHref();
 
   const Row = (
-    <article className="flex items-start justify-between gap-4 rounded-2xl border border-white/10 bg-zinc-900/60 px-4 py-3 text-sm shadow-sm transition hover:border-white/30 hover:bg-zinc-900/90">
+    <article className="content-list-item">
       <div className="flex flex-col gap-1.5">
-        <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-zinc-500">
+        <div className="content-list-tag">
           <span>{item.tag}</span>
           {item.locked && (
-            <span className="rounded-full bg-amber-400/10 px-2 py-0.5 text-[10px] text-amber-200">
+            <span className="locked-badge">
               Abbonati
             </span>
           )}
         </div>
-        <div className="font-medium text-white">{item.title}</div>
+        <div className="content-list-title">{item.title}</div>
         {item.summary && (
-          <p className="max-w-3xl text-xs text-zinc-400 line-clamp-2">
+          <p className="content-list-summary">
             {item.summary}
           </p>
         )}
       </div>
-      <div className="shrink-0 pl-2 text-right text-[11px] uppercase tracking-wide text-zinc-500">
+      <div className="content-list-date">
         {item.date}
       </div>
     </article>

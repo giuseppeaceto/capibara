@@ -22,7 +22,7 @@ export default async function ArchivioPage() {
         fallback={
         <div className="space-y-8">
           <div>
-            <h1 className="text-4xl font-semibold text-white">Archivio</h1>
+            <h1 className="page-title text-4xl font-semibold">Archivio</h1>
             <p className="mt-2 text-zinc-400">
               Cerca tra tutti i contenuti di Capibara Media
             </p>

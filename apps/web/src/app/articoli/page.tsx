@@ -16,15 +16,15 @@ export default async function ArticoliPage({
     <MainLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-4xl font-semibold text-white">Articoli</h1>
-          <p className="mt-2 text-zinc-400">
+          <h1 className="page-title text-4xl font-semibold">Articoli</h1>
+          <p className="body-text mt-2">
             Approfondimenti, analisi e articoli editoriali
           </p>
         </div>
 
         {articles.length === 0 ? (
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900/80 p-12 text-center">
-            <p className="text-zinc-400">Nessun articolo disponibile al momento.</p>
+          <div className="content-box p-12 text-center">
+            <p className="body-text">Nessun articolo disponibile al momento.</p>
           </div>
         ) : (
           <>
@@ -57,7 +57,7 @@ export default async function ArticoliPage({
                 {pagination.page > 1 && (
                   <Link
                     href={`/articoli?page=${pagination.page - 1}`}
-                    className="rounded-full border border-white/10 px-6 py-2 text-sm text-zinc-300 transition hover:border-white/40 hover:text-white"
+                    className="pagination-button"
                   >
                     ← Precedente
                   </Link>
@@ -68,7 +68,7 @@ export default async function ArticoliPage({
                 {pagination.page < pagination.pageCount && (
                   <Link
                     href={`/articoli?page=${pagination.page + 1}`}
-                    className="rounded-full border border-white/10 px-6 py-2 text-sm text-zinc-300 transition hover:border-white/40 hover:text-white"
+                    className="pagination-button"
                   >
                     Successiva →
                   </Link>

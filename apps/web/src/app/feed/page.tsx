@@ -49,15 +49,15 @@ export default async function FeedPage() {
     <MainLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-4xl font-semibold text-white">Feed</h1>
-          <p className="mt-2 text-zinc-400">
+          <h1 className="page-title text-4xl font-semibold">Feed</h1>
+          <p className="body-text mt-2">
             Tutti i contenuti in ordine cronologico
           </p>
         </div>
 
         {allContent.length === 0 ? (
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900/80 p-12 text-center">
-            <p className="text-zinc-400">Nessun contenuto disponibile al momento.</p>
+          <div className="content-box p-12 text-center">
+            <p className="body-text">Nessun contenuto disponibile al momento.</p>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

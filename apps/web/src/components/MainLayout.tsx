@@ -32,15 +32,27 @@ type NavLink = {
   children?: string[];
 };
 
-const CapibaraLogoIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <Image
-    src="/logo_capibara.png"
-    alt="Capibara"
-    width={24}
-    height={24}
-    className={`rounded-md bg-white/5 object-contain p-0.5 ${className ?? ""}`}
-  />
-);
+const CapibaraLogoIcon: React.FC<{ 
+  className?: string;
+  isDark?: boolean;
+  isActive?: boolean;
+}> = ({ className, isDark = true, isActive = false }) => {
+  // In light mode e non attivo: usa logo nero
+  // In dark mode o attivo: usa logo bianco
+  const logoSrc = (!isDark && !isActive) 
+    ? "/logo_capibara_nero.png" 
+    : "/logo_capibara.png";
+  
+  return (
+    <Image
+      src={logoSrc}
+      alt="Capibara"
+      width={24}
+      height={24}
+      className={`rounded-md bg-white/5 object-contain p-0.5 ${className ?? ""}`}
+    />
+  );
+};
 
 const primaryNav: NavLink[] = [
   { label: "Home", icon: HomeIcon, href: "/" },
@@ -118,7 +130,15 @@ const NavGroup = ({
           className={`flex flex-col rounded-2xl px-3 py-2 text-sm transition ${baseClasses}`}
         >
           <div className="flex items-center gap-3">
-            <item.icon className={`h-4 w-4 ${iconClasses}`} />
+            {item.icon === CapibaraLogoIcon ? (
+              <CapibaraLogoIcon 
+                className={`h-4 w-4 ${iconClasses}`}
+                isDark={isDark}
+                isActive={isActive}
+              />
+            ) : (
+              <item.icon className={`h-4 w-4 ${iconClasses}`} />
+            )}
             <span className="flex-1">{item.label}</span>
             {item.locked && (
               <span
@@ -154,7 +174,24 @@ export default function MainLayout({
 }) {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const [theme, setTheme] = React.useState<"dark" | "light">("dark");
+  
+  // Leggi il tema dal localStorage all'inizializzazione, con fallback a "dark"
+  const [theme, setTheme] = React.useState<"dark" | "light">(() => {
+    // Solo lato client (localStorage non esiste durante SSR)
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("capibara-theme") as "dark" | "light" | null;
+      return savedTheme || "dark";
+    }
+    return "dark";
+  });
+
+  // Salva il tema nel localStorage e applica all'elemento html quando cambia
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("capibara-theme", theme);
+      document.documentElement.setAttribute("data-theme", theme);
+    }
+  }, [theme]);
 
   const isDark = theme === "dark";
 
@@ -266,9 +303,10 @@ export default function MainLayout({
                 <>
                   <button
                     type="button"
-                    onClick={() =>
-                      setTheme((prev) => (prev === "dark" ? "light" : "dark"))
-                    }
+                    onClick={() => {
+                      const newTheme = theme === "dark" ? "light" : "dark";
+                      setTheme(newTheme);
+                    }}
                     className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium transition ${
                       isDark
                         ? "border border-white/10 bg-white/5 text-zinc-200 hover:border-white/40 hover:bg-white/10"

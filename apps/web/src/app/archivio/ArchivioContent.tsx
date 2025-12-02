@@ -201,26 +201,26 @@ export function ArchivioContent({
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-4xl font-semibold text-white">Archivio</h1>
-        <p className="mt-2 text-zinc-400">
+        <h1 className="page-title text-4xl font-semibold">Archivio</h1>
+        <p className="body-text mt-2">
           Cerca o esplora tutti i contenuti di Capibara Media
         </p>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">
-        <div className="flex flex-1 items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+        <div className="search-box">
           <Search className="h-5 w-5 text-zinc-500" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Cerca episodi, podcast, newsletter o articoli..."
-            className="w-full bg-transparent text-sm text-white placeholder:text-zinc-500 focus:outline-none"
+            className="search-input"
           />
           <button
             type="submit"
             disabled={loading || !query.trim()}
-            className="rounded-full bg-white/90 px-6 py-2 text-sm font-semibold text-black transition hover:bg-white disabled:opacity-50"
+            className="search-button"
           >
             {loading ? "Cercando..." : "Cerca"}
           </button>
@@ -229,8 +229,8 @@ export function ArchivioContent({
 
       {showInitialHub && (
         <div className="space-y-6">
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900/80 via-zinc-900/40 to-zinc-900/0 p-6 md:p-8">
-            <p className="text-sm text-zinc-300 md:text-base">
+          <div className="info-box">
+            <p className="info-box-text">
               Inizia a digitare per cercare tra tutti i contenuti, oppure
               scorri la lista unificata qui sotto.
             </p>
@@ -238,7 +238,7 @@ export function ArchivioContent({
 
           <section className="space-y-3">
             <div className="flex items-center justify-between gap-2">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">
+              <h2 className="section-header">
                 Tutti i contenuti recenti
               </h2>
               <span className="text-xs text-zinc-500">
@@ -268,8 +268,8 @@ export function ArchivioContent({
       {!showInitialHub && results && (
         <div className="space-y-6">
           {!hasSearchResults || !searchUnifiedList || searchUnifiedList.length === 0 ? (
-            <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900/80 p-12 text-center">
-              <p className="text-zinc-400">
+            <div className="content-box p-12 text-center">
+              <p className="body-text">
                 Nessun risultato trovato per &quot;{query}&quot;
               </p>
             </div>
@@ -277,7 +277,7 @@ export function ArchivioContent({
             <section className="space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <div className="space-y-1">
-                  <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">
+                  <h2 className="section-header">
                     Risultati ricerca
                   </h2>
                   <p className="text-xs text-zinc-500">

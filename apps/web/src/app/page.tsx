@@ -42,16 +42,19 @@ export default async function Home() {
             </p>
           </div>
           <div className="mt-6 flex w-full justify-start lg:mt-0 lg:w-auto lg:justify-end">
-            <div className="flex flex-col gap-3 text-sm text-zinc-300 sm:flex-row sm:items-center">
+            <div className="flex flex-col gap-3 text-sm sm:flex-row sm:items-center hero-buttons">
               <Link
                 href="/abbonamenti"
-                className="rounded-full bg-white/90 px-6 py-3 text-center font-semibold text-black transition hover:bg-white"
+                className="hero-button-primary"
               >
                 Abbonati ora
               </Link>
-              <button className="rounded-full border border-white/30 px-6 py-3 font-semibold text-white transition hover:border-white/70">
+              <Link
+                href="/login"
+                className="hero-button-secondary"
+              >
                 Accedi
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -67,7 +70,7 @@ export default async function Home() {
               </div>
               <Link
                 href="/video"
-                className="text-sm text-zinc-300 transition hover:text-white"
+                className="section-link"
               >
                 Vedi tutto
               </Link>
@@ -126,7 +129,7 @@ export default async function Home() {
                     VentiQuaranta
                   </h3>
                 </div>
-                <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs text-indigo-200">
+                <span className="rss-badge">
                   Feed RSS
                 </span>
               </div>
@@ -189,7 +192,7 @@ export default async function Home() {
                 );
               })}
               </div>
-              <button className="w-full rounded-2xl border border-white/20 px-4 py-3 text-left text-sm text-zinc-300 transition hover:border-white/50 hover:text-white">
+              <button className="benefit-button">
                 Esplora i benefit per gli abbonati →
               </button>
             </div>
@@ -206,7 +209,7 @@ export default async function Home() {
                 </div>
                 <Link
                   href="/articoli"
-                  className="text-sm text-zinc-300 transition hover:text-white"
+                  className="section-link"
                 >
                   Vedi tutto
                 </Link>

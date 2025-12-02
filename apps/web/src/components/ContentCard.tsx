@@ -61,7 +61,7 @@ export default function ContentCard({ entry }: { entry: ContentTile }) {
   }
 
   const CardContent = (
-    <article className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-gradient-to-br p-6 shadow-[0_25px_80px_rgba(0,0,0,0.35)] transition hover:-translate-y-1 hover:border-white/25 cursor-pointer">
+    <article className="content-card">
       <div className={`relative h-40 rounded-2xl overflow-hidden bg-gradient-to-r ${entry.accent}`}>
         {cardImageUrl ? (
           <Image
@@ -77,18 +77,18 @@ export default function ContentCard({ entry }: { entry: ContentTile }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
       </div>
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-sm uppercase tracking-wide text-zinc-400">
+        <div className="content-card-tag">
           <span>{entry.tag}</span>
           {entry.locked && (
-            <span className="rounded-full bg-amber-400/10 px-3 py-0.5 text-xs text-amber-200">
+            <span className="locked-badge">
               Abbonati
             </span>
           )}
         </div>
-        <h3 className="text-xl font-semibold text-white">{entry.title}</h3>
-        <p className="text-sm text-zinc-400 line-clamp-2">{entry.summary}</p>
+        <h3 className="content-card-title">{entry.title}</h3>
+        <p className="content-card-summary">{entry.summary}</p>
       </div>
-      <div className="mt-auto text-xs uppercase tracking-wide text-zinc-500">
+      <div className="content-card-date">
         {entry.date}
       </div>
     </article>

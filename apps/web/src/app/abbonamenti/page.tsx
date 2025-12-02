@@ -73,8 +73,8 @@ export default function AbbonamentiPage() {
     <MainLayout>
       <div className="space-y-12">
         <div className="text-center space-y-4">
-          <h1 className="text-5xl font-semibold text-white">Scegli il tuo abbonamento</h1>
-          <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+          <h1 className="page-title text-5xl font-semibold">Scegli il tuo abbonamento</h1>
+          <p className="body-text-lg text-xl max-w-2xl mx-auto">
             Accedi a contenuti esclusivi, approfondimenti e una community di appassionati
           </p>
         </div>
@@ -83,11 +83,7 @@ export default function AbbonamentiPage() {
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative flex flex-col rounded-3xl border ${
-                plan.popular
-                  ? "border-amber-500/50 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-red-500/10"
-                  : "border-white/10 bg-gradient-to-br from-zinc-900/80 via-zinc-900/20 to-indigo-900/20"
-              } p-8 shadow-[0_25px_80px_rgba(0,0,0,0.35)]`}
+              className={`pricing-card ${plan.popular ? "pricing-card-popular" : ""}`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -103,26 +99,26 @@ export default function AbbonamentiPage() {
                     {plan.icon}
                   </div>
                   <div>
-                    <h3 className="text-2xl font-semibold text-white">{plan.name}</h3>
-                    <p className="text-sm text-zinc-400 mt-1">{plan.description}</p>
+                    <h3 className="pricing-title">{plan.name}</h3>
+                    <p className="body-text-sm meta-text mt-1">{plan.description}</p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold text-white">€{plan.price}</span>
-                    <span className="text-zinc-400">/{plan.period}</span>
+                    <span className="pricing-price">€{plan.price}</span>
+                    <span className="meta-text">/{plan.period}</span>
                   </div>
                   <p className="text-xs text-zinc-500">
                     Annullabile in qualsiasi momento
                   </p>
                 </div>
 
-                <ul className="space-y-3 pt-4 border-t border-white/10">
+                <ul className={`space-y-3 pt-4 pricing-features-border`}>
                   {plan.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-zinc-300">{feature}</span>
+                      <span className="pricing-feature">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -141,30 +137,30 @@ export default function AbbonamentiPage() {
           ))}
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900/80 via-zinc-900/20 to-indigo-900/20 p-8 space-y-6">
-          <h2 className="text-2xl font-semibold text-white">Domande frequenti</h2>
+        <div className="faq-box space-y-6">
+          <h2 className="faq-title">Domande frequenti</h2>
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
-              <h3 className="font-semibold text-white">Posso cambiare piano in qualsiasi momento?</h3>
-              <p className="text-sm text-zinc-400">
+              <h3 className="faq-question">Posso cambiare piano in qualsiasi momento?</h3>
+              <p className="body-text-sm">
                 Sì, puoi aggiornare o modificare il tuo abbonamento in qualsiasi momento dal tuo profilo.
               </p>
             </div>
             <div className="space-y-2">
-              <h3 className="font-semibold text-white">Cosa succede se annullo?</h3>
-              <p className="text-sm text-zinc-400">
+              <h3 className="faq-question">Cosa succede se annullo?</h3>
+              <p className="body-text-sm">
                 Mantieni l'accesso fino alla fine del periodo pagato. Dopo non avrai più accesso ai contenuti premium.
               </p>
             </div>
             <div className="space-y-2">
-              <h3 className="font-semibold text-white">I pagamenti sono sicuri?</h3>
-              <p className="text-sm text-zinc-400">
+              <h3 className="faq-question">I pagamenti sono sicuri?</h3>
+              <p className="body-text-sm">
                 Utilizziamo Stripe per processare i pagamenti in modo sicuro. Non conserviamo i dati della tua carta.
               </p>
             </div>
             <div className="space-y-2">
-              <h3 className="font-semibold text-white">Offrite sconti annuali?</h3>
-              <p className="text-sm text-zinc-400">
+              <h3 className="faq-question">Offrite sconti annuali?</h3>
+              <p className="body-text-sm">
                 Sì! I piani annuali includono uno sconto del 20%. Contattaci per maggiori informazioni.
               </p>
             </div>
@@ -172,9 +168,9 @@ export default function AbbonamentiPage() {
         </div>
 
         <div className="text-center space-y-4">
-          <p className="text-zinc-400">
+          <p className="body-text">
             Hai bisogno di aiuto?{" "}
-            <Link href="/" className="text-white underline hover:text-zinc-300">
+            <Link href="/" className="page-title underline hover:opacity-80">
               Contattaci
             </Link>
           </p>

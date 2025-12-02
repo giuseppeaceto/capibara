@@ -12,8 +12,8 @@ export default function LoginPage() {
     <MainLayout>
       <div className="flex flex-col items-center justify-center gap-8 py-16">
         <div className="space-y-3 text-center max-w-xl">
-          <h1 className="text-4xl font-semibold text-white">Accedi a Capibara</h1>
-          <p className="text-zinc-400">
+          <h1 className="login-title">Accedi a Capibara</h1>
+          <p className="login-description">
             Entra con il tuo account Google per salvare preferiti, gestire
             l&apos;abbonamento e accedere ai contenuti riservati.
           </p>

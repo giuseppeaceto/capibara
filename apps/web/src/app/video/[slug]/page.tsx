@@ -21,22 +21,22 @@ export default async function VideoEpisodePage({
       <div className="space-y-8">
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-zinc-400 transition hover:text-white"
+          className="back-link"
         >
           ← Torna alla home
         </Link>
 
         <article className="space-y-8">
           <div>
-            <div className="mb-4 flex items-center gap-2 text-sm uppercase tracking-wide text-zinc-400">
+            <div className="mb-4 flex items-center gap-2 text-sm uppercase tracking-wide meta-text">
               <span>Video</span>
               {episode.isPremium && (
-                <span className="rounded-full bg-amber-400/10 px-3 py-0.5 text-xs text-amber-200">
+                <span className="locked-badge">
                   Abbonati
                 </span>
               )}
             </div>
-            <h1 className="text-4xl font-semibold leading-tight text-white">
+            <h1 className="page-title text-4xl font-semibold leading-tight">
               {episode.title}
             </h1>
             {episode.publishDate && (
@@ -51,7 +51,7 @@ export default async function VideoEpisodePage({
           </div>
 
           {episode.synopsis && (
-            <p className="text-lg text-zinc-300">{episode.synopsis}</p>
+            <p className="article-excerpt">{episode.synopsis}</p>
           )}
 
           {toYoutubeEmbedUrl(episode.videoUrl) && (
@@ -66,7 +66,7 @@ export default async function VideoEpisodePage({
           )}
 
           {episode.summary && (
-            <div className="prose prose-invert max-w-none text-zinc-300">
+            <div className="article-prose">
               <p>{episode.summary}</p>
             </div>
           )}
