@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Configurazione immagini remote (Strapi CMS)
+  // Configurazione immagini remote (Strapi CMS + Cloudinary)
   images: {
     remotePatterns: [
       {
@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         hostname: "localhost",
         port: "1337",
         pathname: "/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
       },
     ],
   },
