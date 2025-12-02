@@ -1,36 +1,125 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Capibara Web - Frontend Next.js
 
-## Getting Started
+Frontend pubblico del progetto **Capibara**, costruito con Next.js 16 e Tailwind CSS.
 
-First, run the development server:
+## Stack Tecnologico
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 16** - Framework React con App Router
+- **React 19** - Libreria UI
+- **Tailwind CSS 4** - Framework CSS utility-first
+- **TypeScript** - Tipizzazione statica
+- **NextAuth.js** - Autenticazione (in configurazione)
+
+## Struttura del Progetto
+
+```
+apps/web/
+├── src/
+│   ├── app/              # App Router di Next.js
+│   │   ├── articoli/     # Pagine articoli
+│   │   ├── newsletter/   # Pagine newsletter
+│   │   ├── podcast/      # Pagine podcast
+│   │   ├── video/        # Pagine video
+│   │   └── ...
+│   ├── components/       # Componenti React riutilizzabili
+│   └── lib/              # Utility e helper
+│       ├── api.ts        # Client API per Strapi
+│       ├── markdown.ts   # Parser Markdown
+│       └── youtube.ts    # Utility YouTube
+├── public/               # File statici
+└── package.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Sviluppo Locale
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisiti
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 20+
+- Backend Strapi in esecuzione su `http://localhost:1337`
 
-## Learn More
+### Setup
 
-To learn more about Next.js, take a look at the following resources:
+1. Installa le dipendenze:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Configura le variabili d'ambiente (crea `.env.local`):
+   ```env
+   NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Avvia il server di sviluppo:
+   ```bash
+   npm run dev
+   ```
 
-## Deploy on Vercel
+4. Apri [http://localhost:3000](http://localhost:3000) nel browser
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Script Disponibili
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` - Avvia il server di sviluppo
+- `npm run build` - Build per produzione
+- `npm run start` - Avvia il server di produzione
+- `npm run lint` - Esegue ESLint
+
+## Configurazione
+
+### Variabili d'Ambiente
+
+- `NEXT_PUBLIC_STRAPI_URL` - URL del backend Strapi (obbligatorio)
+- `NEXTAUTH_URL` - URL dell'applicazione (per autenticazione)
+- `NEXTAUTH_SECRET` - Secret per NextAuth (genera con `openssl rand -base64 32`)
+- `GOOGLE_CLIENT_ID` - Client ID Google OAuth (opzionale)
+- `GOOGLE_CLIENT_SECRET` - Client Secret Google OAuth (opzionale)
+
+### Connessione al Backend
+
+Il frontend si connette automaticamente al backend Strapi configurato in `NEXT_PUBLIC_STRAPI_URL`. 
+
+I contenuti vengono recuperati tramite:
+- API pubbliche di Strapi (`/api/*`)
+- Client API personalizzato in `src/lib/api.ts`
+
+## Deployment
+
+Il frontend è deployato su **Vercel**. Vedi la documentazione completa:
+
+- 📖 [Guida Deployment Vercel](../../VERCEL_DEPLOY.md)
+- 📖 [Guida Deployment Generale](../../DEPLOYMENT.md)
+
+## Pagine Principali
+
+- `/` - Homepage
+- `/articoli` - Lista articoli
+- `/articoli/[slug]` - Dettaglio articolo
+- `/newsletter` - Lista newsletter
+- `/newsletter/[slug]` - Dettaglio newsletter
+- `/podcast` - Lista podcast
+- `/podcast/[slug]` - Dettaglio episodio podcast
+- `/video` - Lista video
+- `/video/[slug]` - Dettaglio episodio video
+- `/archivio` - Archivio contenuti
+- `/chi-siamo` - Chi siamo
+- `/partner` - Partner
+
+## Componenti Principali
+
+- `MainLayout` - Layout principale con header e footer
+- `ContentCard` - Card per visualizzare contenuti
+- `ContentListItem` - Item di lista per contenuti
+- `PodcastPlatformButtons` - Pulsanti per piattaforme podcast
+
+## Prossimi Sviluppi
+
+- [ ] Integrazione completa NextAuth per autenticazione
+- [ ] Area riservata per abbonati
+- [ ] Integrazione pagamenti Stripe
+- [ ] Ottimizzazioni SEO
+- [ ] Design system completo
+
+## Documentazione
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [NextAuth.js Documentation](https://next-auth.js.org)

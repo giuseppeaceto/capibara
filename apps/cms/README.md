@@ -1,61 +1,194 @@
-# 🚀 Getting started with Strapi
+# Capibara CMS - Backend Strapi
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+Backend CMS del progetto **Capibara**, costruito con Strapi 5 e PostgreSQL.
 
-### `develop`
+## Stack Tecnologico
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
+- **Strapi 5** - Headless CMS TypeScript
+- **PostgreSQL 16** - Database relazionale
+- **Cloudinary** - Storage immagini cloud
+- **TypeScript** - Tipizzazione statica
 
-```
-npm run develop
-# or
-yarn develop
-```
-
-### `start`
-
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
+## Struttura del Progetto
 
 ```
-npm run start
-# or
-yarn start
+apps/cms/
+├── config/               # Configurazioni Strapi
+│   ├── admin.ts         # Configurazione admin panel
+│   ├── api.ts           # Configurazione API
+│   ├── database.ts      # Configurazione database
+│   ├── middlewares.ts   # Middleware (CORS, security, etc.)
+│   ├── plugins.ts       # Configurazione plugin (upload, etc.)
+│   └── server.ts        # Configurazione server
+├── src/
+│   ├── api/             # Content Types e API
+│   │   ├── article/     # Content Type Articolo
+│   │   ├── newsletter-issue/  # Content Type Newsletter
+│   │   ├── podcast-episode/   # Content Type Podcast
+│   │   ├── video-episode/     # Content Type Video
+│   │   ├── show/        # Content Type Show
+│   │   ├── tag/         # Content Type Tag
+│   │   └── partner/     # Content Type Partner
+│   └── extensions/      # Estensioni personalizzate
+│       └── upload/      # Provider upload Cloudinary
+├── database/            # Migrazioni database
+└── package.json
 ```
 
-### `build`
+## Content Types Disponibili
 
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
+- **Show** - Hub per brand/video/podcast/newsletter
+- **Article** - Articoli editoriali
+- **Video Episode** - Episodi video
+- **Podcast Episode** - Episodi podcast
+- **Newsletter Issue** - Numeri newsletter
+- **Tag** - Tassonomia per categorizzare contenuti
+- **Partner** - Partner e sponsorizzazioni
 
-```
-npm run build
-# or
-yarn build
-```
+Tutti i content types supportano **Draft & Publish** per gestire contenuti in bozza.
 
-## ⚙️ Deployment
+## Sviluppo Locale
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
+### Prerequisiti
 
-```
-yarn strapi deploy
-```
+- Node.js 20+
+- Docker Desktop (per PostgreSQL locale)
+- PostgreSQL 16 (via Docker Compose)
 
-## 📚 Learn more
+### Setup
 
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
+1. Avvia PostgreSQL:
+   ```bash
+   # Dalla root del progetto
+   docker compose up -d postgres
+   ```
 
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
+2. Configura le variabili d'ambiente:
+   ```bash
+   cp env.example .env
+   ```
+   
+   Compila il file `.env` con le credenziali necessarie:
+   - `APP_KEYS` - Genera con: `openssl rand -base64 32` (4 volte, separati da virgola)
+   - `API_TOKEN_SALT` - Genera con: `openssl rand -base64 32`
+   - `ADMIN_JWT_SECRET` - Genera con: `openssl rand -base64 32`
+   - `TRANSFER_TOKEN_SALT` - Genera con: `openssl rand -base64 32`
+   - `JWT_SECRET` - Genera con: `openssl rand -base64 32`
 
-## ✨ Community
+3. Installa le dipendenze:
+   ```bash
+   npm install
+   ```
 
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
+4. Avvia Strapi in modalità sviluppo:
+   ```bash
+   npm run develop
+   ```
 
----
+5. Accedi all'admin panel: [http://localhost:1337/admin](http://localhost:1337/admin)
 
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+### Configurazione Permessi Pubblici
+
+Dopo aver creato l'utente admin:
+
+1. Vai su: **Settings → Users & Permissions → Roles → Public**
+2. Per ogni content type, abilita:
+   - ✅ **find** (per liste)
+   - ✅ **findOne** (per dettagli)
+3. Salva
+
+Questo permetterà al frontend di leggere i contenuti pubblici senza autenticazione.
+
+### Script Disponibili
+
+- `npm run develop` - Avvia Strapi in modalità sviluppo (auto-reload)
+- `npm run build` - Build per produzione
+- `npm start` - Avvia Strapi in modalità produzione
+- `npm run strapi` - CLI Strapi
+
+## Configurazione Produzione
+
+### Variabili d'Ambiente
+
+#### Database
+- `DATABASE_CLIENT=postgres`
+- `DATABASE_HOST` - Host PostgreSQL
+- `DATABASE_PORT` - Porta PostgreSQL (default: 5432)
+- `DATABASE_NAME` - Nome database
+- `DATABASE_USERNAME` - Username database
+- `DATABASE_PASSWORD` - Password database
+- `DATABASE_SSL=true` - Abilita SSL per connessioni remote
+
+#### Strapi
+- `NODE_ENV=production`
+- `HOST=0.0.0.0`
+- `PORT=1337`
+- `APP_KEYS` - 4 chiavi separate da virgola
+- `API_TOKEN_SALT` - Salt per API token
+- `ADMIN_JWT_SECRET` - Secret JWT admin
+- `TRANSFER_TOKEN_SALT` - Salt transfer token
+- `JWT_SECRET` - Secret JWT
+
+#### Cloudinary (Storage Immagini)
+- `CLOUDINARY_NAME` - Nome cloud Cloudinary
+- `CLOUDINARY_KEY` - API Key Cloudinary
+- `CLOUDINARY_SECRET` - API Secret Cloudinary
+
+**⚠️ IMPORTANTE**: Senza Cloudinary configurato, le immagini verranno perse ad ogni deploy!
+
+## Storage Immagini
+
+Il progetto usa **Cloudinary** come provider di storage per garantire persistenza delle immagini su piattaforme con filesystem effimero (Render, Vercel, etc.).
+
+### Setup Cloudinary
+
+Vedi la documentazione completa:
+- 📖 [Setup Cloudinary](../../CLOUDINARY_SETUP.md)
+- 🔍 [Verifica Cloudinary](../../CLOUDINARY_CHECK.md)
+- 🐛 [Troubleshooting Cloudinary](../../CLOUDINARY_TROUBLESHOOTING.md)
+
+## Deployment
+
+Il backend è deployato su **Render**. Vedi la documentazione completa:
+
+- 📖 [Guida Deployment Render](../../RENDER_DEPLOY.md)
+- 📖 [Guida Deployment Generale](../../DEPLOYMENT.md)
+
+## API Endpoints
+
+L'API Strapi è disponibile su `/api/*`:
+
+- `GET /api/articles` - Lista articoli
+- `GET /api/articles/:id` - Dettaglio articolo
+- `GET /api/shows` - Lista show
+- `GET /api/video-episodes` - Lista episodi video
+- `GET /api/podcast-episodes` - Lista episodi podcast
+- `GET /api/newsletter-issues` - Lista newsletter
+- `GET /api/tags` - Lista tag
+- `GET /api/partners` - Lista partner
+
+Tutti gli endpoint pubblici supportano:
+- Filtri e query parameters
+- Popolamento relazioni
+- Paginazione
+
+## Prossimi Sviluppi
+
+- [ ] Autenticazione utenti e ruoli
+- [ ] Integrazione Stripe per gestione abbonamenti
+- [ ] Webhook per sincronizzazione stato utenti
+- [ ] Backup automatico database
+- [ ] Monitoring e logging avanzati
+
+## Documentazione
+
+- [Strapi Documentation](https://docs.strapi.io)
+- [Strapi CLI](https://docs.strapi.io/dev-docs/cli)
+- [Strapi Deployment](https://docs.strapi.io/dev-docs/deployment)
+
+## Supporto
+
+Per problemi o domande:
+- Consulta la [documentazione Strapi](https://docs.strapi.io)
+- Vedi i file di troubleshooting nella root del progetto
+- Controlla i log del servizio di deployment

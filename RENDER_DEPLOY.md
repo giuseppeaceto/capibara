@@ -87,12 +87,6 @@ https://tuo-frontend.vercel.app
 ```
 Sostituisci con l'URL reale del tuo frontend su Vercel.
 
-**FRONTEND_URL** (importante per CORS):
-```
-https://tuo-frontend.vercel.app
-```
-Sostituisci con l'URL reale del tuo frontend su Vercel.
-
 **CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET** (per storage immagini persistente):
 ```
 CLOUDINARY_NAME=your-cloud-name
