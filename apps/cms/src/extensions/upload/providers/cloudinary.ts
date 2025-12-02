@@ -1,5 +1,4 @@
 import cloudinary from 'cloudinary';
-import type { Core } from '@strapi/strapi';
 
 interface CloudinaryConfig {
   cloud_name: string;
@@ -7,7 +6,7 @@ interface CloudinaryConfig {
   api_secret: string;
 }
 
-export default {
+const cloudinaryProvider = {
   init(config: CloudinaryConfig) {
     cloudinary.v2.config({
       cloud_name: config.cloud_name,
@@ -69,4 +68,6 @@ export default {
     };
   },
 };
+
+export default cloudinaryProvider;
 
