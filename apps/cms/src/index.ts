@@ -7,26 +7,16 @@ export default {
    *
    * This gives you an opportunity to extend code.
    */
-  async register({ strapi }: { strapi: Core.Strapi }) {
-    // Registra il provider Cloudinary solo se le variabili d'ambiente sono configurate
-    const hasCloudinaryConfig = 
-      process.env.CLOUDINARY_NAME && 
-      process.env.CLOUDINARY_KEY && 
-      process.env.CLOUDINARY_SECRET;
+  register({ strapi }: { strapi: Core.Strapi }) {
+    // Log env vars for debugging
+    const cloudinaryName = process.env.CLOUDINARY_NAME;
+    const cloudinaryKey = process.env.CLOUDINARY_KEY;
+    const cloudinarySecret = process.env.CLOUDINARY_SECRET;
 
-    if (hasCloudinaryConfig) {
-      try {
-        // Import dinamico per evitare errori se cloudinary non è installato
-        const cloudinaryProvider = await import('./extensions/upload/providers/cloudinary');
-        strapi.plugin('upload').provider.register('cloudinary', cloudinaryProvider.default);
-        strapi.log.info('✅ Cloudinary provider registered successfully');
-      } catch (error) {
-        strapi.log.error('❌ Failed to register Cloudinary provider:', error);
-        strapi.log.warn('⚠️ Falling back to local provider');
-      }
-    } else {
-      strapi.log.warn('⚠️ Cloudinary not configured, using local provider');
-    }
+    strapi.log.info('🔍 Checking Cloudinary configuration...');
+    strapi.log.info(`   CLOUDINARY_NAME: ${cloudinaryName ? '✅ Set' : '❌ Missing'}`);
+    strapi.log.info(`   CLOUDINARY_KEY: ${cloudinaryKey ? '✅ Set' : '❌ Missing'}`);
+    strapi.log.info(`   CLOUDINARY_SECRET: ${cloudinarySecret ? '✅ Set' : '❌ Missing'}`);
   },
 
   /**
