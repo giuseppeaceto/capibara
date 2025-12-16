@@ -36,7 +36,6 @@ export async function generateMetadata({
       siteName: "Capibara",
       title: episode.title,
       description,
-      publishedTime: episode.publishDate || undefined,
       images: [
         {
           url: finalImageUrl,
