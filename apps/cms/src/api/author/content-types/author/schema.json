@@ -22,6 +22,12 @@
     },
     "bio": {
       "type": "text"
+    },
+    "columns": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::column.column",
+      "mappedBy": "author"
     }
   }
 }
