@@ -228,6 +228,14 @@ type DailyLink = {
   url: string;
   description?: string | null;
   publishDate: string;
+  image?: {
+    data: {
+      attributes: {
+        url: string;
+        alternativeText?: string | null;
+      };
+    };
+  } | null;
 };
 
 type Column = {
@@ -623,6 +631,7 @@ export async function getDailyLinks(date?: string) {
         "filters[publishDate][$eq]": targetDate,
         "publicationState": "live",
         "sort[0]": "createdAt:desc",
+        "populate": "image",
       },
       revalidate: 60,
     }

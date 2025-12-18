@@ -25,6 +25,13 @@
     "publishDate": {
       "type": "date",
       "required": true
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

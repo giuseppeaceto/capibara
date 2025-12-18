@@ -119,7 +119,6 @@ const primaryNav: NavLink[] = [
     label: "Newsletter",
     icon: Mail,
     href: "/newsletter",
-    locked: true,
     children: ["Capibara Insider", "Deep Dive"],
   },
   { label: "Archivio", icon: Archive, href: "/archivio" },

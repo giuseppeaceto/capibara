@@ -33,14 +33,29 @@ export default async function NewsletterPage({
               <h2 className="text-2xl font-bold uppercase tracking-tight">Link del Giorno</h2>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              {dailyLinks.map((link, i) => (
-                <div key={i} className="content-box p-5 border-l-4 border-zinc-200 hover:border-zinc-900 transition-colors">
-                  <a href={link.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-lg hover:underline decoration-2 underline-offset-4">
-                    {link.title}
-                  </a>
-                  {link.description && <p className="text-sm text-zinc-600 mt-2 leading-relaxed">{link.description}</p>}
-                </div>
-              ))}
+              {dailyLinks.map((link, i) => {
+                const { url: imageUrl, alt: imageAlt } = extractHeroImage(link.image);
+                
+                return (
+                  <div key={i} className="content-box overflow-hidden border-l-4 border-zinc-200 hover:border-zinc-900 transition-colors flex flex-col sm:flex-row">
+                    {imageUrl && (
+                      <div className="w-full sm:w-32 h-32 shrink-0">
+                        <img 
+                          src={imageUrl} 
+                          alt={imageAlt || link.title} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="p-5 flex-1">
+                      <a href={link.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-lg hover:underline decoration-2 underline-offset-4 line-clamp-2">
+                        {link.title}
+                      </a>
+                      {link.description && <p className="text-sm text-zinc-600 mt-2 leading-relaxed line-clamp-3">{link.description}</p>}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </section>
         )}
@@ -54,20 +69,23 @@ export default async function NewsletterPage({
             </div>
             <div className="grid gap-6 md:grid-cols-2">
               {columns.map((column, i) => {
-                const author = column.author?.data?.attributes;
+                // Gestisce i diversi formati di risposta di Strapi per la relazione author
+                const authorData = column.author as any;
+                const author = authorData?.data?.attributes || authorData?.attributes || authorData;
+
                 return (
                   <div key={i} className="content-box p-6 space-y-5 flex flex-col">
                     <div className="flex items-center gap-4">
                       {author?.avatar && (
                         <img 
                           src={extractHeroImage(author.avatar).url ?? ""} 
-                          alt={author.name} 
+                          alt={author?.name || "Autore"} 
                           className="w-12 h-12 rounded-full object-cover ring-2 ring-zinc-100"
                         />
                       )}
                       <div>
-                        <h3 className="font-bold text-xl leading-none">{column.title}</h3>
-                        <p className="text-sm text-zinc-500 mt-1">curata da <span className="text-zinc-900 font-medium">{author?.name}</span></p>
+                        <h3 className="font-bold text-xl leading-none page-heading">{column.title}</h3>
+                        <p className="text-sm text-zinc-500 mt-1">curata da <span className="font-medium text-zinc-900 dark:text-zinc-100">{author?.name || "Redazione"}</span></p>
                       </div>
                     </div>
                     
