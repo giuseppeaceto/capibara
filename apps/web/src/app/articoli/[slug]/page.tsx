@@ -22,26 +22,49 @@ export async function generateMetadata({
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.coop";
   const articleUrl = `${siteUrl}/articoli/${slug}`;
-  const imageUrl = article.heroImage?.data?.attributes?.url
+  
+  // Usa metaImage dal SEO se disponibile, altrimenti heroImage, altrimenti logo
+  const seoImageUrl = article.seo?.metaImage?.data?.attributes?.url
+    ? getStrapiMediaUrl(article.seo.metaImage.data.attributes.url)
+    : null;
+  const heroImageUrl = article.heroImage?.data?.attributes?.url
     ? getStrapiMediaUrl(article.heroImage.data.attributes.url) || `${siteUrl}${article.heroImage.data.attributes.url}`
-    : `${siteUrl}/logo_capibara.png`;
+    : null;
+  const imageUrl = seoImageUrl || heroImageUrl || `${siteUrl}/logo_capibara.png`;
 
-  const description = article.excerpt || article.body?.substring(0, 160) || "Leggi l'articolo completo su Capibara";
+  // Usa metaTitle dal SEO se disponibile, altrimenti title
+  const metaTitle = article.seo?.metaTitle || article.title;
+  
+  // Usa metaDescription dal SEO se disponibile, altrimenti excerpt, altrimenti body
+  const description = article.seo?.metaDescription || article.excerpt || article.body?.substring(0, 160) || "Leggi l'articolo completo su Capibara";
+
+  // Usa keywords dal SEO se disponibile (stringa separata da virgole), altrimenti tags
+  const seoKeywords = article.seo?.keywords
+    ? article.seo.keywords.split(',').map(k => k.trim()).filter(Boolean)
+    : [];
+  const tagKeywords = article.tags?.data?.map((tag) => tag.attributes.name) || [];
+  const keywords = seoKeywords.length > 0 ? seoKeywords : tagKeywords;
 
   const author: Author | undefined =
     article.author?.data?.attributes || undefined;
 
+  // Se preventIndexing è true, aggiungi noindex
+  const robots = article.seo?.preventIndexing
+    ? { index: false, follow: false }
+    : { index: true, follow: true };
+
   return {
-    title: article.title,
+    title: metaTitle,
     description,
-    keywords: article.tags?.data?.map((tag) => tag.attributes.name) || [],
+    keywords,
     authors: author ? [{ name: author.name }] : undefined,
+    robots,
     openGraph: {
       type: "article",
       locale: "it_IT",
       url: articleUrl,
       siteName: "Capibara",
-      title: article.title,
+      title: metaTitle,
       description,
       publishedTime: article.publishDate || undefined,
       images: [
@@ -49,13 +72,15 @@ export async function generateMetadata({
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: article.heroImage?.data?.attributes?.alternativeText || article.title,
+          alt: article.seo?.metaImage?.data?.attributes?.alternativeText || 
+               article.heroImage?.data?.attributes?.alternativeText || 
+               article.title,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: article.title,
+      title: metaTitle,
       description,
       images: [imageUrl],
     },

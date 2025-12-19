@@ -21,33 +21,48 @@ export async function generateMetadata({
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.coop";
   const videoUrl = `${siteUrl}/video/${slug}`;
-  const { url: imageUrl } = extractHeroImage(episode.heroImage);
-  const finalImageUrl = imageUrl || `${siteUrl}/logo_capibara.png`;
+  
+  // Usa metaImage dal SEO se disponibile, altrimenti heroImage, altrimenti logo
+  const seoImageUrl = episode.seo?.metaImage?.data?.attributes?.url
+    ? getStrapiMediaUrl(episode.seo.metaImage.data.attributes.url)
+    : null;
+  const { url: heroImageUrl } = extractHeroImage(episode.heroImage);
+  const finalImageUrl = seoImageUrl || heroImageUrl || `${siteUrl}/logo_capibara.png`;
 
-  const description = episode.synopsis || episode.summary || "Guarda il video completo su Capibara";
+  // Usa metaTitle dal SEO se disponibile, altrimenti title
+  const metaTitle = episode.seo?.metaTitle || episode.title;
+  
+  // Usa metaDescription dal SEO se disponibile, altrimenti synopsis/summary
+  const description = episode.seo?.metaDescription || episode.synopsis || episode.summary || "Guarda il video completo su Capibara";
+
+  // Se preventIndexing è true, aggiungi noindex
+  const robots = episode.seo?.preventIndexing
+    ? { index: false, follow: false }
+    : { index: true, follow: true };
 
   return {
-    title: episode.title,
+    title: metaTitle,
     description,
+    robots,
     openGraph: {
       type: "video.other",
       locale: "it_IT",
       url: videoUrl,
       siteName: "Capibara",
-      title: episode.title,
+      title: metaTitle,
       description,
       images: [
         {
           url: finalImageUrl,
           width: 1200,
           height: 630,
-          alt: episode.title,
+          alt: episode.seo?.metaImage?.data?.attributes?.alternativeText || episode.title,
         },
       ],
     },
     twitter: {
       card: "player",
-      title: episode.title,
+      title: metaTitle,
       description,
       images: [finalImageUrl],
     },

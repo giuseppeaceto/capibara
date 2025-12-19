@@ -191,6 +191,7 @@ type EpisodeBase = {
       attributes: Pick<Show, "title" | "slug" | "kind">;
     } | null;
   };
+  seo?: SeoComponent | null;
 };
 
 type VideoEpisode = EpisodeBase & {
@@ -275,6 +276,23 @@ type Column = {
   }>;
 };
 
+// Tipo per il componente SEO del plugin Strapi SEO
+type SeoComponent = {
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  keywords?: string | null;
+  metaImage?: {
+    data: {
+      attributes: {
+        url: string;
+        alternativeText?: string | null;
+      };
+    } | null;
+  } | null;
+  structuredData?: Record<string, unknown> | null;
+  preventIndexing?: boolean | null;
+};
+
 type Article = {
   title: string;
   slug: string;
@@ -304,6 +322,7 @@ type Article = {
       };
     }>;
   } | null;
+  seo?: SeoComponent | null;
 };
 
 export async function getFeaturedShows(limit = 4) {
@@ -530,6 +549,8 @@ export async function getArticleBySlug(slug: string) {
         "populate[0]": "author",
         "populate[1]": "heroImage",
         "populate[2]": "tags",
+        "populate[3]": "seo",
+        "populate[4]": "seo.metaImage",
         "publicationState": "live",
         "filters[slug][$eq]": slug,
       },

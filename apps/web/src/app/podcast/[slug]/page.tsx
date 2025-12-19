@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getPodcastEpisodeBySlug, extractHeroImage } from "@/lib/api";
+import { getPodcastEpisodeBySlug, extractHeroImage, getStrapiMediaUrl } from "@/lib/api";
 import Link from "next/link";
 import MainLayout from "@/components/MainLayout";
 import PodcastPlatformButtons from "@/components/PodcastPlatformButtons";
@@ -21,33 +21,48 @@ export async function generateMetadata({
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.coop";
   const podcastUrl = `${siteUrl}/podcast/${slug}`;
-  const { url: imageUrl } = extractHeroImage(episode.heroImage);
-  const finalImageUrl = imageUrl || `${siteUrl}/logo_capibara.png`;
+  
+  // Usa metaImage dal SEO se disponibile, altrimenti heroImage, altrimenti logo
+  const seoImageUrl = episode.seo?.metaImage?.data?.attributes?.url
+    ? getStrapiMediaUrl(episode.seo.metaImage.data.attributes.url)
+    : null;
+  const { url: heroImageUrl } = extractHeroImage(episode.heroImage);
+  const finalImageUrl = seoImageUrl || heroImageUrl || `${siteUrl}/logo_capibara.png`;
 
-  const description = episode.synopsis || episode.summary || "Ascolta il podcast completo su Capibara";
+  // Usa metaTitle dal SEO se disponibile, altrimenti title
+  const metaTitle = episode.seo?.metaTitle || episode.title;
+  
+  // Usa metaDescription dal SEO se disponibile, altrimenti synopsis/summary
+  const description = episode.seo?.metaDescription || episode.synopsis || episode.summary || "Ascolta il podcast completo su Capibara";
+
+  // Se preventIndexing è true, aggiungi noindex
+  const robots = episode.seo?.preventIndexing
+    ? { index: false, follow: false }
+    : { index: true, follow: true };
 
   return {
-    title: episode.title,
+    title: metaTitle,
     description,
+    robots,
     openGraph: {
       type: "music.song",
       locale: "it_IT",
       url: podcastUrl,
       siteName: "Capibara",
-      title: episode.title,
+      title: metaTitle,
       description,
       images: [
         {
           url: finalImageUrl,
           width: 1200,
           height: 630,
-          alt: episode.title,
+          alt: episode.seo?.metaImage?.data?.attributes?.alternativeText || episode.title,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: episode.title,
+      title: metaTitle,
       description,
       images: [finalImageUrl],
     },
