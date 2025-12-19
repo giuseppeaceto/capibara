@@ -85,12 +85,11 @@ Questo setup fornisce la base infrastrutturale per sviluppare velocemente sia l'
 
 ### Documentazione
 
-Per ulteriori informazioni su deployment e configurazione:
+La documentazione completa è disponibile nella cartella [`docs/`](./docs/):
 
-- 📖 [Guida Deployment](./DEPLOYMENT.md) - Opzioni di deployment per frontend e backend
-- 🚀 [Deploy su Vercel](./VERCEL_DEPLOY.md) - Guida passo-passo per il frontend
-- 🔧 [Deploy su Render](./RENDER_DEPLOY.md) - Guida passo-passo per il backend
-- ☁️ [Setup Cloudinary](./CLOUDINARY_SETUP.md) - Configurazione storage immagini persistente
+- 📖 **[Deployment](./docs/deployment/)** - Guide complete per il deployment su Vercel e Render
+- 🔍 **[SEO Plugin](./docs/seo/)** - Configurazione e utilizzo del plugin SEO per Strapi
+- ☁️ **[Cloudinary](./docs/cloudinary/)** - Setup e troubleshooting per lo storage immagini persistente
 
 ### Licenza
 
