@@ -68,11 +68,6 @@
       "relation": "manyToMany",
       "target": "api::partner.partner",
       "inversedBy": "article_mentions"
-    },
-    "seo": {
-      "type": "component",
-      "repeatable": false,
-      "component": "shared.seo"
     }
   }
 }

@@ -70,11 +70,6 @@
       "relation": "manyToMany",
       "target": "api::partner.partner",
       "inversedBy": "video_placements"
-    },
-    "seo": {
-      "type": "component",
-      "repeatable": false,
-      "component": "shared.seo"
     }
   }
 }
