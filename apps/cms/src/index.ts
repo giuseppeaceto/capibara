@@ -1,5 +1,95 @@
 import type { Core } from '@strapi/strapi';
 
+/**
+ * Configura automaticamente i permessi per il campo SEO per i ruoli Editor e Author
+ * Questo risolve il problema "no permission to see this field" per il componente SEO
+ */
+async function configureSEOPermissions(strapi: Core.Strapi) {
+  const contentTypesWithSEO = [
+    'api::article.article',
+    'api::video-episode.video-episode',
+    'api::podcast-episode.podcast-episode',
+  ];
+
+  const rolesToConfigure = ['Editor', 'Author', 'editor', 'author'];
+
+  for (const roleName of rolesToConfigure) {
+    try {
+      // Trova il ruolo
+      const roles = await strapi.documents('admin::role').findMany({
+        filters: {
+          $or: [
+            { name: roleName },
+            { code: roleName.toLowerCase() },
+          ],
+        },
+      });
+
+      if (roles.length === 0) {
+        continue; // Ruolo non trovato, passa al successivo
+      }
+
+      const role = roles[0];
+      strapi.log.info(`🔧 Configuring SEO permissions for role: ${role.name}`);
+
+      // Ottieni i permessi esistenti del ruolo
+      const existingPermissions = await strapi.documents('admin::permission').findMany({
+        filters: {
+          role: role.id,
+        },
+        populate: ['role'],
+      });
+
+      // Per ogni content type con SEO
+      for (const contentType of contentTypesWithSEO) {
+        const actions = ['find', 'findOne', 'update', 'create'];
+
+        for (const action of actions) {
+          const actionName = `${contentType}.${action}`;
+          
+          // Cerca se esiste già un permesso per questa azione
+          let permission = existingPermissions.find(
+            (p) => p.action === actionName && p.subject === contentType
+          );
+
+          if (permission) {
+            // Aggiorna il permesso esistente per includere esplicitamente tutti i campi
+            // In Strapi 5, se fields è vuoto o mancante, potrebbe essere interpretato come "nessun campo"
+            const properties = permission.properties || {};
+            const fields = properties.fields;
+
+            // Se fields è già ["*"], non serve modificare
+            if (Array.isArray(fields) && fields.includes('*')) {
+              continue;
+            }
+
+            // Imposta fields a ["*"] per dare accesso a tutti i campi, inclusi i componenti come SEO
+            // Questo risolve il problema "no permission to see this field" per i componenti
+            await strapi.documents('admin::permission').update({
+              documentId: permission.id,
+              data: {
+                properties: {
+                  ...properties,
+                  fields: ['*'],
+                },
+              },
+            });
+
+            strapi.log.info(`   ✅ Updated permission: ${actionName} - set fields to ["*"]`);
+          } else {
+            // Il permesso non esiste ancora - l'utente deve abilitarlo manualmente nell'interfaccia
+            strapi.log.info(`   ℹ️  Permission ${actionName} does not exist - enable it in Settings > Users & Permissions > Roles`);
+          }
+        }
+      }
+    } catch (error) {
+      strapi.log.warn(`⚠️  Error configuring permissions for role ${roleName}:`, error);
+    }
+  }
+
+  strapi.log.info('✅ SEO permissions configuration completed');
+}
+
 export default {
   /**
    * An asynchronous register function that runs before
@@ -31,9 +121,14 @@ export default {
     strapi.log.info('💡 Remember to configure public API permissions:');
     strapi.log.info('   Settings > Users & Permissions > Roles > Public');
     strapi.log.info('   Enable "find" and "findOne" for: Show, Video Episode, Podcast Episode, Newsletter Issue, Tag, Partner, Author, Daily Link (including "image"), Column');
-
-    // SEO component (shared.seo) is created automatically by @strapi-community/plugin-seo
-    // It will be available after the plugin is initialized
+    
+    // Configura automaticamente i permessi per il campo SEO per Editor e Author
+    try {
+      await configureSEOPermissions(strapi);
+    } catch (error) {
+      strapi.log.warn('⚠️  Could not auto-configure SEO permissions:', error);
+      strapi.log.warn('   You may need to configure them manually in Settings > Users & Permissions > Roles');
+    }
 
     // Test content generation
     try {
