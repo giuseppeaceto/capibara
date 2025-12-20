@@ -487,9 +487,7 @@ export async function getLatestArticles(limit = 6) {
     "/api/articles",
     {
       query: {
-        "populate[0]": "author",
-        "populate[1]": "heroImage",
-        "populate[2]": "tags",
+        populate: "*",
         "publicationState": "live",
         "pagination[pageSize]": limit,
         "sort[0]": "publishDate:desc",

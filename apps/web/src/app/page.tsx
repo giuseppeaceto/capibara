@@ -84,6 +84,56 @@ export default async function Home() {
         </div>
       </header>
 
+          {validArticles.length > 0 && (
+            <section className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="eyebrow eyebrow--editorial">Editoriale</p>
+                  <h3 className="section-heading text-2xl font-semibold">
+                    Articoli e approfondimenti di parte
+                  </h3>
+                </div>
+                <Link
+                  href="/articoli"
+                  className="section-link"
+                >
+                  Vedi tutto
+                </Link>
+              </div>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {validArticles.map((article) => {
+                  const { url, alt } = extractHeroImage(article.heroImage);
+                  // Estrai il nome dell'autore da diverse possibili strutture
+                  const authorName = 
+                    article.author?.data?.attributes?.name ||
+                    (article.author as any)?.attributes?.name ||
+                    (article.author as any)?.name ||
+                    null;
+
+                  return (
+                    <ContentCard
+                      key={article.slug}
+                      entry={{
+                        title: article.title ?? "Untitled",
+                        date: formatDate(article.publishDate),
+                        summary: article.excerpt ?? "",
+                        tag: "Articolo",
+                        accent: "from-blue-500/30 via-indigo-500/20 to-purple-900/40",
+                        imageUrl: url ?? undefined,
+                        imageAlt: alt ?? article.title,
+                        locked: article.isPremium ?? false,
+                        slug: article.slug,
+                        type: "article",
+                        borderColor: "indigo-500",
+                        authorName: authorName,
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
           <section className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
@@ -145,44 +195,46 @@ export default async function Home() {
             </div>
           </section>
 
-          <section className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
-            <div className="space-y-6 rounded-3xl border border-white/10 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="eyebrow eyebrow--podcast">Podcast</p>
-                  <h3 className="section-heading text-2xl font-semibold">
-                    VentiQuaranta
-                  </h3>
+          <section className={`grid gap-6 ${validPodcastDrops.length > 0 ? 'lg:grid-cols-[1.25fr_0.75fr]' : 'lg:grid-cols-1'}`}>
+            {validPodcastDrops.length > 0 && (
+              <div className="space-y-6 rounded-3xl border border-white/10 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="eyebrow eyebrow--podcast">Podcast</p>
+                    <h3 className="section-heading text-2xl font-semibold">
+                      {validPodcastDrops[0]?.show?.data?.attributes?.title || "Podcast"}
+                    </h3>
+                  </div>
+                  <span className="rss-badge">
+                    Feed RSS
+                  </span>
                 </div>
-                <span className="rss-badge">
-                  Feed RSS
-                </span>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-              {validPodcastDrops.map((podcast) => {
-                const { url, alt } = extractHeroImage(podcast.heroImage);
+                <div className="grid gap-4 md:grid-cols-2">
+                {validPodcastDrops.map((podcast) => {
+                  const { url, alt } = extractHeroImage(podcast.heroImage);
 
-                return (
-                  <ContentCard
-                    key={podcast.slug}
-                    entry={{
-                      title: podcast.title ?? "Untitled",
-                      date: formatDate(podcast.publishDate),
-                      summary: podcast.summary ?? podcast.synopsis ?? "",
-                      tag: "Podcast",
-                      accent: getKindAccent("podcast"),
-                      imageUrl: url ?? undefined,
-                      imageAlt: alt ?? podcast.title,
-                      locked: podcast.isPremium ?? false,
-                      slug: podcast.slug,
-                      type: "podcast",
-                      borderColor: "teal-500",
-                    }}
-                  />
-                );
-              })}
+                  return (
+                    <ContentCard
+                      key={podcast.slug}
+                      entry={{
+                        title: podcast.title ?? "Untitled",
+                        date: formatDate(podcast.publishDate),
+                        summary: podcast.summary ?? podcast.synopsis ?? "",
+                        tag: "Podcast",
+                        accent: getKindAccent("podcast"),
+                        imageUrl: url ?? undefined,
+                        imageAlt: alt ?? podcast.title,
+                        locked: podcast.isPremium ?? false,
+                        slug: podcast.slug,
+                        type: "podcast",
+                        borderColor: "teal-500",
+                      }}
+                    />
+                  );
+                })}
+                </div>
               </div>
-            </div>
+            )}
             <div className="space-y-6 rounded-3xl border border-white/10 p-6">
               <div>
                 <p className="eyebrow eyebrow--newsletter">Newsletter</p>
@@ -223,51 +275,6 @@ export default async function Home() {
               </button>
             </div>
           </section>
-
-          {validArticles.length > 0 && (
-            <section className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="eyebrow eyebrow--editorial">Editoriale</p>
-                  <h3 className="section-heading text-2xl font-semibold">
-                    Articoli e approfondimenti di parte
-                  </h3>
-                </div>
-                <Link
-                  href="/articoli"
-                  className="section-link"
-                >
-                  Vedi tutto
-                </Link>
-              </div>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {validArticles.map((article) => {
-                  const { url, alt } = extractHeroImage(article.heroImage);
-                  const authorName = article.author?.data?.attributes?.name ?? null;
-
-                  return (
-                    <ContentCard
-                      key={article.slug}
-                      entry={{
-                        title: article.title ?? "Untitled",
-                        date: formatDate(article.publishDate),
-                        summary: article.excerpt ?? "",
-                        tag: "Articolo",
-                        accent: "from-blue-500/30 via-indigo-500/20 to-purple-900/40",
-                        imageUrl: url ?? undefined,
-                        imageAlt: alt ?? article.title,
-                        locked: article.isPremium ?? false,
-                        slug: article.slug,
-                        type: "article",
-                        borderColor: "indigo-500",
-                        authorName: authorName,
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            </section>
-          )}
     </MainLayout>
   );
 }

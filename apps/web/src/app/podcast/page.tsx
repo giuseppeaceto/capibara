@@ -19,7 +19,9 @@ export default async function PodcastPage({
         <div>
           <h1 className="page-title text-4xl font-semibold">Podcast</h1>
           <p className="body-text mt-2">
-            Tutti gli episodi podcast di VentiQuaranta
+            {episodes.length > 0 && episodes[0]?.show?.data?.attributes?.title
+              ? `Tutti gli episodi podcast di ${episodes[0].show.data.attributes.title}`
+              : "Tutti gli episodi podcast"}
           </p>
         </div>
 
