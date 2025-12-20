@@ -41,6 +41,7 @@ export async function generateMetadata({
     : { index: true, follow: true };
 
   return {
+    metadataBase: new URL(siteUrl),
     title: metaTitle,
     description,
     robots,
