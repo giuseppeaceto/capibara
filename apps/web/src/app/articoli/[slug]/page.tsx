@@ -20,7 +20,7 @@ export async function generateMetadata({
     };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.coop";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.media";
   const articleUrl = `${siteUrl}/articoli/${slug}`;
   
   // Usa metaImage dal SEO se disponibile, altrimenti heroImage, altrimenti logo
@@ -102,7 +102,7 @@ export default async function ArticlePage({
     notFound();
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.coop";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.media";
   const articleUrl = `${siteUrl}/articoli/${slug}`;
   const imageUrl = article.heroImage?.data?.attributes?.url
     ? getStrapiMediaUrl(article.heroImage.data.attributes.url) || `${siteUrl}${article.heroImage.data.attributes.url}`

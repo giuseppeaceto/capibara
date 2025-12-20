@@ -6,7 +6,7 @@ import {
 } from "@/lib/api";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.coop";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.media";
 
   // Ottieni tutti i contenuti (usiamo limit alto per ottenere tutto)
   const [articles, videos, podcasts] = await Promise.all([

@@ -19,7 +19,7 @@ export async function generateMetadata({
     };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.coop";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.media";
   const podcastUrl = `${siteUrl}/podcast/${slug}`;
   
   // Usa metaImage dal SEO se disponibile, altrimenti heroImage, altrimenti logo
@@ -84,7 +84,7 @@ export default async function PodcastEpisodePage({
     notFound();
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.coop";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.media";
   const podcastPageUrl = `${siteUrl}/podcast/${slug}`;
   const { url: imageUrl } = extractHeroImage(episode.heroImage);
   const finalImageUrl = imageUrl || `${siteUrl}/logo_capibara.png`;

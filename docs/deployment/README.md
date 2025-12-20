@@ -44,3 +44,4 @@ Il progetto è composto da:
 - [ ] Configura backup automatici
 - [ ] Verifica connessioni SSL
 
+

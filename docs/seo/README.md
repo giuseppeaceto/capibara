@@ -100,3 +100,4 @@ Se vedi questo errore anche dopo aver riavviato Strapi:
 - [Strapi Marketplace - SEO Plugin](https://strapi.io/marketplace/plugins/@strapi-plugin-seo)
 - [Best Practices SEO](https://developers.google.com/search/docs/fundamentals/seo-starter-guide)
 
+

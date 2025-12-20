@@ -23,3 +23,4 @@ Questa cartella contiene tutta la documentazione tecnica del progetto Capibara C
 - [Verifica Configurazione](./cloudinary/CLOUDINARY_CHECK.md)
 - [Troubleshooting](./cloudinary/CLOUDINARY_TROUBLESHOOTING.md)
 
+

@@ -29,3 +29,4 @@ Su piattaforme come Render, Railway o Vercel, il filesystem è effimero. Le imma
 - ✅ Trasformazioni immagini on-the-fly
 - ✅ Free tier generoso (25GB storage, 25GB bandwidth/mese)
 
+
