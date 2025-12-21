@@ -174,15 +174,15 @@ export function ArchivioContent({
           type: "podcast" as const,
         })),
         ...results.newsletters.map((issue) => ({
-          id: `newsletter-${issue.slug}`,
+          id: `newsroom-${issue.slug}`,
           title: issue.title ?? "Untitled",
           isoDate: issue.publishDate,
           date: formatDate(issue.publishDate),
           summary: issue.excerpt ?? issue.summary ?? "",
-          tag: "Newsletter",
+          tag: "Newsroom",
           locked: issue.isPremium ?? true,
           slug: issue.slug,
-          type: "newsletter" as const,
+          type: "newsroom" as const,
         })),
         ...results.articles.map((article) => ({
           id: `article-${article.slug}`,
