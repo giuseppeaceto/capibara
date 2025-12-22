@@ -463,120 +463,166 @@ body {
 /* Prose styles for article content */
 .article-prose {
   line-height: 1.75;
+  /* Reset Tailwind CSS reset for prose content */
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Ensure all text elements inherit color */
+.article-prose,
+.article-prose * {
+  color: inherit;
 }
 
 .article-prose p {
-  margin-top: 1.25em;
-  margin-bottom: 1.25em;
+  margin-top: 1.25em !important;
+  margin-bottom: 1.25em !important;
+  line-height: 1.75 !important;
 }
 
 .article-prose h1,
 .article-prose h2,
 .article-prose h3,
-.article-prose h4 {
-  font-weight: 600;
-  margin-top: 2em;
-  margin-bottom: 1em;
-  line-height: 1.25;
+.article-prose h4,
+.article-prose h5,
+.article-prose h6 {
+  font-weight: 600 !important;
+  margin-top: 2em !important;
+  margin-bottom: 1em !important;
+  line-height: 1.25 !important;
+  color: inherit !important;
 }
 
 .article-prose h1 {
-  font-size: 2.25em;
+  font-size: 2.25em !important;
 }
 
 .article-prose h2 {
-  font-size: 1.875em;
+  font-size: 1.875em !important;
 }
 
 .article-prose h3 {
-  font-size: 1.5em;
+  font-size: 1.5em !important;
 }
 
-.article-prose h4 {
-  font-size: 1.25em;
+.article-prose h4,
+.article-prose h5,
+.article-prose h6 {
+  font-size: 1.25em !important;
 }
 
 .article-prose ul,
 .article-prose ol {
-  margin-top: 1.25em;
-  margin-bottom: 1.25em;
-  padding-left: 1.625em;
+  margin-top: 1.25em !important;
+  margin-bottom: 1.25em !important;
+  padding-left: 1.625em !important;
 }
 
 .article-prose li {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+  line-height: 1.75 !important;
 }
 
 .article-prose blockquote {
-  border-left: 0.25rem solid;
-  padding-left: 1em;
-  margin: 1.5em 0;
-  font-style: italic;
+  border-left: 0.25rem solid !important;
+  padding-left: 1em !important;
+  margin: 1.5em 0 !important;
+  font-style: italic !important;
+  color: inherit !important;
 }
 
 [data-theme="dark"] .article-prose blockquote {
-  border-color: #a1a1aa;
+  border-color: #a1a1aa !important;
 }
 
 [data-theme="light"] .article-prose blockquote {
-  border-color: #d4d4d8;
+  border-color: #d4d4d8 !important;
 }
 
 .article-prose a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+  color: inherit !important;
 }
 
 [data-theme="dark"] .article-prose a {
-  color: #60a5fa;
+  color: #60a5fa !important;
 }
 
 [data-theme="light"] .article-prose a {
-  color: #2563eb;
+  color: #2563eb !important;
 }
 
-.article-prose strong {
-  font-weight: 600;
+.article-prose strong,
+.article-prose b {
+  font-weight: 600 !important;
+  color: inherit !important;
+}
+
+.article-prose em,
+.article-prose i {
+  font-style: italic !important;
+  color: inherit !important;
 }
 
 .article-prose code {
-  font-size: 0.875em;
-  padding: 0.125em 0.25em;
-  border-radius: 0.25rem;
+  font-size: 0.875em !important;
+  padding: 0.125em 0.25em !important;
+  border-radius: 0.25rem !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
 }
 
 [data-theme="dark"] .article-prose code {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #e5e7eb;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #e5e7eb !important;
 }
 
 [data-theme="light"] .article-prose code {
-  background-color: #f4f4f5;
-  color: #18181b;
+  background-color: #f4f4f5 !important;
+  color: #18181b !important;
 }
 
 .article-prose pre {
-  overflow-x: auto;
-  padding: 1em;
-  border-radius: 0.5rem;
-  margin: 1.5em 0;
+  overflow-x: auto !important;
+  padding: 1em !important;
+  border-radius: 0.5rem !important;
+  margin: 1.5em 0 !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  line-height: 1.5 !important;
 }
 
 [data-theme="dark"] .article-prose pre {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  color: #e5e7eb !important;
 }
 
 [data-theme="light"] .article-prose pre {
-  background-color: #f4f4f5;
+  background-color: #f4f4f5 !important;
+  color: #18181b !important;
+}
+
+.article-prose pre code {
+  background-color: transparent !important;
+  padding: 0 !important;
+  font-size: inherit !important;
+  color: inherit !important;
 }
 
 .article-prose img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 0.5rem;
-  margin: 1.5rem auto;
-  display: block;
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 0.5rem !important;
+  margin: 1.5rem auto !important;
+  display: block !important;
+}
+
+/* Handle br tags properly */
+.article-prose br {
+  display: block !important;
+  content: "" !important;
+  margin-bottom: 0.5em !important;
 }
 
 /* Article tags */
