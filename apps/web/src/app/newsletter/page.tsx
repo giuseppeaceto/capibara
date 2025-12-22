@@ -115,7 +115,7 @@ export default async function NewsletterPage({
                 </div>
 
                 {/* Pulsante di condivisione */}
-                <div className="flex justify-end border-2 border-red-500 p-2">
+                <div className="flex justify-end">
                   <ShareButton
                     title={selectedColumn.title}
                     url={`/newsletter?column=${selectedColumn.slug}`}
