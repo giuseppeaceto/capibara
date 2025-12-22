@@ -4,6 +4,7 @@ import ContentCard, { formatDate, getKindAccent } from "@/components/ContentCard
 import type { Show } from "@/lib/api";
 import Link from "next/link";
 import { Instagram, Music2, Linkedin, Globe } from "lucide-react";
+import ShareButton from "@/components/ShareButton";
 
 export default async function NewsletterPage({
   searchParams,
@@ -57,7 +58,7 @@ export default async function NewsletterPage({
                   <div>
                     <h1 className="text-4xl font-bold tracking-tight">{selectedColumn.title}</h1>
                     <p className="text-lg text-zinc-600 dark:text-zinc-400 mt-2">
-                      Rubrica curata da <span className="font-semibold text-zinc-900 dark:text-zinc-100">{selectedAuthor?.name || "Redazione"}</span>
+                      Rubrica curata da <span className="font-semibold newsletter-author-name">{selectedAuthor?.name || "Redazione"}</span>
                     </p>
                     {(selectedAuthor?.instagram ||
                       selectedAuthor?.tiktok ||
@@ -113,6 +114,15 @@ export default async function NewsletterPage({
                   </div>
                 </div>
 
+                {/* Pulsante di condivisione */}
+                <div className="flex justify-end border-2 border-red-500 p-2">
+                  <ShareButton
+                    title={selectedColumn.title}
+                    url={`/newsletter?column=${selectedColumn.slug}`}
+                    text={`Scopri la rubrica "${selectedColumn.title}" su Capibara`}
+                  />
+                </div>
+
                 {selectedColumn.cover && (
                   <div className="aspect-[21/9] w-full overflow-hidden rounded-3xl bg-zinc-100 dark:bg-zinc-800">
                     <img 
@@ -125,7 +135,7 @@ export default async function NewsletterPage({
 
                 {selectedColumn.description && (
                   <div className="content-box p-8">
-                    <p className="text-xl text-zinc-700 dark:text-zinc-300 italic leading-relaxed font-serif">
+                    <p className="text-xl newsletter-description-text italic leading-relaxed font-serif">
                       &ldquo;{selectedColumn.description}&rdquo;
                     </p>
                   </div>
@@ -141,7 +151,7 @@ export default async function NewsletterPage({
                           {link.label}
                         </h3>
                         {link.description && (
-                          <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                          <p className="text-sm text-zinc-900 dark:text-zinc-400 leading-relaxed">
                             {link.description}
                           </p>
                         )}
@@ -196,7 +206,7 @@ export default async function NewsletterPage({
                             <a href={link.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-lg hover:underline decoration-2 underline-offset-4 line-clamp-2">
                               {link.title}
                             </a>
-                            {link.description && <p className="text-sm text-zinc-600 mt-2 leading-relaxed line-clamp-3">{link.description}</p>}
+                            {link.description && <p className="text-sm newsletter-card-description mt-2 leading-relaxed line-clamp-3">{link.description}</p>}
                           </div>
                         </div>
                       );
@@ -225,7 +235,7 @@ export default async function NewsletterPage({
                               <a href={item.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-lg hover:underline decoration-2 underline-offset-4 line-clamp-2">
                                 {item.label}
                               </a>
-                              {item.description && <p className="text-sm text-zinc-600 mt-2 leading-relaxed line-clamp-3">{item.description}</p>}
+                              {item.description && <p className="text-sm newsletter-card-description mt-2 leading-relaxed line-clamp-3">{item.description}</p>}
                               <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
                                 <div className="flex items-center gap-2">
                                   {author?.avatar && (
@@ -238,7 +248,7 @@ export default async function NewsletterPage({
                                     </div>
                                   )}
                                   <div className="flex items-center gap-2 flex-wrap">
-                                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-300">
                                       Da <span className="font-medium text-zinc-900 dark:text-zinc-100">{item.column.title}</span>
                                     </p>
                                     {author?.name && (
@@ -257,74 +267,68 @@ export default async function NewsletterPage({
                 </section>
               )}
 
-              {/* Archivio Premium */}
-              <section className="space-y-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-8 bg-zinc-900" />
-                  <h2 className="text-2xl font-bold uppercase tracking-tight">Archivio Premium</h2>
-                </div>
-
-                {issues.length === 0 ? (
-                  <div className="content-box p-12 text-center">
-                    <p className="body-text">Nessuna newsroom disponibile al momento.</p>
+              {/* Archivio Premium - mostra solo se ci sono elementi */}
+              {issues.length > 0 && (
+                <section className="space-y-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-8 bg-zinc-900" />
+                    <h2 className="text-2xl font-bold uppercase tracking-tight">Archivio Premium</h2>
                   </div>
-                ) : (
-                  <>
-                    <div className="grid gap-6 md:grid-cols-2">
-                      {issues.map((issue) => {
-                        const showData = issue.show?.data;
-                        const showKind =
-                          (showData?.attributes?.kind as Show["kind"]) ?? "newsroom";
-                        const accent = getKindAccent(showKind);
 
-                        const { url, alt } = extractHeroImage(issue.heroImage);
+                  <div className="grid gap-6 md:grid-cols-2">
+                    {issues.map((issue) => {
+                      const showData = issue.show?.data;
+                      const showKind =
+                        (showData?.attributes?.kind as Show["kind"]) ?? "newsroom";
+                      const accent = getKindAccent(showKind);
 
-                        return (
-                          <ContentCard
-                            key={issue.slug}
-                            entry={{
-                              title: issue.title ?? "Untitled",
-                              date: formatDate(issue.publishDate),
-                              summary: issue.excerpt ?? issue.summary ?? "",
-                              tag: "Newsroom",
-                              accent,
-                              imageUrl: url ?? undefined,
-                              imageAlt: alt ?? issue.title,
-                              locked: issue.isPremium ?? true,
-                              slug: issue.slug,
-                              type: "newsroom",
-                            }}
-                          />
-                        );
-                      })}
+                      const { url, alt } = extractHeroImage(issue.heroImage);
+
+                      return (
+                        <ContentCard
+                          key={issue.slug}
+                          entry={{
+                            title: issue.title ?? "Untitled",
+                            date: formatDate(issue.publishDate),
+                            summary: issue.excerpt ?? issue.summary ?? "",
+                            tag: "Newsroom",
+                            accent,
+                            imageUrl: url ?? undefined,
+                            imageAlt: alt ?? issue.title,
+                            locked: issue.isPremium ?? true,
+                            slug: issue.slug,
+                            type: "newsroom",
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+
+                  {pagination.pageCount > 1 && (
+                    <div className="flex items-center justify-center gap-4 pt-4">
+                      {pagination.page > 1 && (
+                        <Link
+                          href={`/newsletter?page=${pagination.page - 1}`}
+                          className="pagination-button"
+                        >
+                          ← Precedente
+                        </Link>
+                      )}
+                      <span className="text-sm font-medium text-zinc-500">
+                        Pagina {pagination.page} di {pagination.pageCount}
+                      </span>
+                      {pagination.page < pagination.pageCount && (
+                        <Link
+                          href={`/newsletter?page=${pagination.page + 1}`}
+                          className="pagination-button"
+                        >
+                          Successiva →
+                        </Link>
+                      )}
                     </div>
-
-                    {pagination.pageCount > 1 && (
-                      <div className="flex items-center justify-center gap-4 pt-4">
-                        {pagination.page > 1 && (
-                          <Link
-                            href={`/newsletter?page=${pagination.page - 1}`}
-                            className="pagination-button"
-                          >
-                            ← Precedente
-                          </Link>
-                        )}
-                        <span className="text-sm font-medium text-zinc-500">
-                          Pagina {pagination.page} di {pagination.pageCount}
-                        </span>
-                        {pagination.page < pagination.pageCount && (
-                          <Link
-                            href={`/newsletter?page=${pagination.page + 1}`}
-                            className="pagination-button"
-                          >
-                            Successiva →
-                          </Link>
-                        )}
-                      </div>
-                    )}
-                  </>
-                )}
-              </section>
+                  )}
+                </section>
+              )}
             </>
           )}
         </div>
@@ -411,14 +415,14 @@ export default async function NewsletterPage({
                       </div>
                       
                       {!isSelected && column.description && (
-                        <p className="text-[11px] text-zinc-800 dark:text-zinc-400 italic leading-relaxed line-clamp-2">
+                        <p className="text-[11px] newsletter-card-description italic leading-relaxed line-clamp-2">
                           &ldquo;{column.description}&rdquo;
                         </p>
                       )}
 
                       {isSelected && (
                         <div className="pt-2">
-                          <span className="text-[10px] font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1 uppercase tracking-wider">
+                          <span className="text-[10px] font-bold newsletter-featured-text flex items-center gap-1 uppercase tracking-wider">
                              In primo piano <span className="text-xs">✨</span>
                           </span>
                         </div>

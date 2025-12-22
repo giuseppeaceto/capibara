@@ -209,7 +209,7 @@ body {
 }
 
 [data-theme="dark"] .content-card-summary {
-  @apply text-sm text-zinc-400 line-clamp-2;
+  @apply text-sm text-zinc-300 line-clamp-2;
 }
 
 [data-theme="light"] .content-card-summary {
@@ -444,11 +444,56 @@ body {
 
 /* Article excerpt */
 [data-theme="dark"] .article-excerpt {
-  @apply text-lg text-zinc-300;
+  @apply text-lg text-zinc-200;
 }
 
 [data-theme="light"] .article-excerpt {
   @apply text-lg text-zinc-700;
+}
+
+/* Force black text for newsletter card descriptions in light mode */
+.newsletter-card-description {
+  color: rgb(24 24 27) !important; /* zinc-900 */
+}
+
+[data-theme="dark"] .newsletter-card-description {
+  color: rgb(212 212 216) !important; /* zinc-300 */
+}
+
+/* Ensure newsletter card descriptions override any other color rules */
+.newsletter-card-description {
+  color: rgb(24 24 27) !important; /* zinc-900 in light mode */
+}
+
+[data-theme="dark"] .newsletter-card-description {
+  color: rgb(212 212 216) !important; /* zinc-300 in dark mode */
+}
+
+/* Force black text for newsletter author names in light mode */
+.newsletter-author-name {
+  color: rgb(24 24 27) !important; /* zinc-900 */
+}
+
+[data-theme="dark"] .newsletter-author-name {
+  color: rgb(244 244 245) !important; /* zinc-100 */
+}
+
+/* Force black text for newsletter featured text in light mode */
+.newsletter-featured-text {
+  color: rgb(24 24 27) !important; /* zinc-900 */
+}
+
+[data-theme="dark"] .newsletter-featured-text {
+  color: rgb(244 244 245) !important; /* zinc-100 */
+}
+
+/* Force black text for newsletter description text in light mode */
+.newsletter-description-text {
+  color: rgb(24 24 27) !important; /* zinc-900 */
+}
+
+[data-theme="dark"] .newsletter-description-text {
+  color: rgb(212 212 216) !important; /* zinc-300 */
 }
 
 /* Article body prose */

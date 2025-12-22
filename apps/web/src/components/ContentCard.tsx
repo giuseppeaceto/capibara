@@ -95,7 +95,7 @@ export default function ContentCard({ entry }: { entry: ContentTile }) {
         </div>
         <h3 className="content-card-title">{entry.title}</h3>
         {entry.authorName && (
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-zinc-500 dark:text-zinc-300">
             di {entry.authorName}
           </p>
         )}
