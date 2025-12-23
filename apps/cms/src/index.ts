@@ -1,6 +1,98 @@
 import type { Core } from '@strapi/strapi';
 
 /**
+ * Configura automaticamente i permessi per il campo publishDate per tutti i ruoli
+ * Questo permette agli utenti non super admin di pianificare la pubblicazione
+ */
+async function configurePublishDatePermissions(strapi: Core.Strapi) {
+  const contentTypesWithPublishDate = [
+    'api::article.article',
+    'api::video-episode.video-episode',
+    'api::podcast-episode.podcast-episode',
+    'api::newsletter-issue.newsletter-issue',
+  ];
+
+  // Ottieni tutti i ruoli admin (escluso Super Admin che ha già tutti i permessi)
+  const allRoles = await strapi.documents('admin::role').findMany();
+  const rolesToConfigure = allRoles.filter(role => role.code !== 'strapi-super-admin');
+
+  for (const role of rolesToConfigure) {
+    try {
+      strapi.log.info(`🔧 Configuring publishDate permissions for role: ${role.name} (ID: ${role.id})`);
+
+      // Ottieni tutti i permessi e filtra per ruolo
+      const allPermissions = await strapi.documents('admin::permission').findMany({
+        populate: ['role'],
+      });
+      
+      // Filtra manualmente per ruolo
+      const existingPermissions = allPermissions.filter((p) => {
+        if (!p.role) return false;
+        const roleId = typeof p.role === 'object' && 'id' in p.role ? p.role.id : null;
+        if (!roleId) return false;
+        return String(roleId) === String(role.id);
+      });
+
+      // Per ogni content type con publishDate
+      for (const contentType of contentTypesWithPublishDate) {
+        const actions = ['find', 'findOne', 'update', 'create'];
+
+        for (const action of actions) {
+          const actionName = `${contentType}.${action}`;
+          
+          // Cerca se esiste già un permesso per questa azione
+          let permission = existingPermissions.find(
+            (p) => p.action === actionName && p.subject === contentType
+          );
+
+          if (permission) {
+            // Aggiorna il permesso esistente per includere esplicitamente tutti i campi
+            const properties = permission.properties;
+            let propertiesObj: Record<string, any> = {};
+            
+            // Converti properties a oggetto se è JSONObject
+            if (properties && typeof properties === 'object' && !Array.isArray(properties)) {
+              propertiesObj = properties as Record<string, any>;
+            }
+            
+            const fields = propertiesObj.fields;
+
+            // Se fields è già ["*"], non serve modificare
+            if (Array.isArray(fields) && fields.includes('*')) {
+              continue;
+            }
+
+            // Imposta fields a ["*"] per dare accesso a tutti i campi, incluso publishDate
+            const documentId = typeof permission.id === 'string' ? permission.id : String(permission.id);
+            
+            await strapi.documents('admin::permission').update({
+              documentId,
+              data: {
+                properties: {
+                  ...propertiesObj,
+                  fields: ['*'],
+                },
+              },
+            });
+
+            strapi.log.info(`   ✅ Updated permission: ${actionName} - set fields to ["*"]`);
+          } else {
+            // Il permesso non esiste ancora - l'utente deve abilitarlo manualmente nell'interfaccia
+            strapi.log.warn(`   ⚠️  Permission ${actionName} does not exist for role ${role.name}`);
+            strapi.log.warn(`      → Go to Settings > Users & Permissions > Roles > ${role.name}`);
+            strapi.log.warn(`      → Enable "${action}" for ${contentType.split('::')[1]}`);
+          }
+        }
+      }
+    } catch (error) {
+      strapi.log.warn(`⚠️  Error configuring publishDate permissions for role ${role.name}:`, error);
+    }
+  }
+
+  strapi.log.info('✅ publishDate permissions configuration completed');
+}
+
+/**
  * Configura automaticamente i permessi per il campo SEO per i ruoli Editor, Author e Authenticated
  * Questo risolve il problema "no permission to see this field" per il componente SEO
  */
@@ -142,6 +234,14 @@ export default {
     strapi.log.info('   Settings > Users & Permissions > Roles > Public');
     strapi.log.info('   Enable "find" and "findOne" for: Show, Video Episode, Podcast Episode, Newsletter Issue, Tag, Partner, Author, Daily Link (including "image"), Column');
     
+    // Configura automaticamente i permessi per il campo publishDate per tutti i ruoli
+    try {
+      await configurePublishDatePermissions(strapi);
+    } catch (error) {
+      strapi.log.warn('⚠️  Could not auto-configure publishDate permissions:', error);
+      strapi.log.warn('   You may need to configure them manually in Settings > Users & Permissions > Roles');
+    }
+
     // Configura automaticamente i permessi per il campo SEO per Editor, Author e Authenticated
     try {
       await configureSEOPermissions(strapi);
