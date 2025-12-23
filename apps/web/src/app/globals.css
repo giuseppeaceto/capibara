@@ -810,3 +810,69 @@ body {
   @apply font-semibold text-zinc-900;
 }
 
+/* Rubriche Filters Box */
+[data-theme="dark"] .rubriche-filters-box {
+  @apply bg-black border border-zinc-800;
+}
+
+[data-theme="light"] .rubriche-filters-box {
+  @apply bg-white border border-zinc-200;
+}
+
+[data-theme="dark"] .rubriche-filters-label {
+  @apply text-white;
+}
+
+[data-theme="light"] .rubriche-filters-label {
+  @apply text-black;
+}
+
+[data-theme="dark"] .rubriche-filters-reset {
+  @apply text-white hover:text-zinc-300;
+}
+
+[data-theme="light"] .rubriche-filters-reset {
+  @apply text-black hover:text-zinc-700;
+}
+
+/* Custom Dropdown */
+[data-theme="dark"] .rubriche-filters-dropdown-label {
+  @apply text-white;
+}
+
+[data-theme="light"] .rubriche-filters-dropdown-label {
+  @apply text-black;
+}
+
+[data-theme="dark"] .rubriche-filters-dropdown-button {
+  @apply bg-black border-zinc-700 text-white hover:border-zinc-600;
+}
+
+[data-theme="light"] .rubriche-filters-dropdown-button {
+  @apply bg-white border-zinc-300 text-black hover:border-zinc-400;
+}
+
+[data-theme="dark"] .rubriche-filters-dropdown-menu {
+  @apply bg-black border-zinc-700;
+}
+
+[data-theme="light"] .rubriche-filters-dropdown-menu {
+  @apply bg-white border-zinc-300;
+}
+
+[data-theme="dark"] .rubriche-filters-dropdown-item {
+  @apply text-white hover:bg-zinc-800;
+}
+
+[data-theme="light"] .rubriche-filters-dropdown-item {
+  @apply text-black hover:bg-zinc-100;
+}
+
+[data-theme="dark"] .rubriche-filters-dropdown-item.font-medium {
+  @apply bg-zinc-800;
+}
+
+[data-theme="light"] .rubriche-filters-dropdown-item.font-medium {
+  @apply bg-zinc-100;
+}
+

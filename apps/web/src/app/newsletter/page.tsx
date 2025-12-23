@@ -295,17 +295,18 @@ export default async function NewsletterPage({
     // Logic for categorized view ("Dalle Rubriche")
     const categorized = getCategorizedRubricaLinks(columns);
 
-    // Extract metadata only for recent categories (today and yesterday) to avoid too many requests
-    const recentLinks = [
+    // Extract metadata for all links that will be displayed in the categorized view
+    const allDisplayedLinks = [
       ...categorized.today,
       ...categorized.yesterday,
-      ...categorized.twoDaysAgo.slice(0, 1), // Only 1 from 2 days ago
-      ...categorized.threeDaysAgo.slice(0, 1), // Only 1 from 3 days ago
+      ...categorized.twoDaysAgo,
+      ...categorized.threeDaysAgo,
+      ...categorized.older,
     ];
 
-    // Extract metadata for recent links (limit to 4 concurrent requests for main view)
+    // Extract metadata for all displayed links
     const linksWithMetadata = await Promise.all(
-      recentLinks.slice(0, 4).map(async (item) => { // Limit to 4 concurrent requests for main view
+      allDisplayedLinks.map(async (item) => {
         try {
           const metadata = await extractExternalMetadata(item.url);
           return { ...item, externalMetadata: metadata };
@@ -323,7 +324,7 @@ export default async function NewsletterPage({
       yesterday: categorized.yesterday.map(link => ({ ...link, externalMetadata: metadataMap.get(link.url) || {} })),
       twoDaysAgo: categorized.twoDaysAgo.map(link => ({ ...link, externalMetadata: metadataMap.get(link.url) || {} })),
       threeDaysAgo: categorized.threeDaysAgo.map(link => ({ ...link, externalMetadata: metadataMap.get(link.url) || {} })),
-      older: categorized.older
+      older: categorized.older.map(link => ({ ...link, externalMetadata: metadataMap.get(link.url) || {} }))
     };
   }
 

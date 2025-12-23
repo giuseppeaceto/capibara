@@ -54,13 +54,13 @@ export default function CustomDropdown({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <label className="text-sm text-zinc-600 dark:text-zinc-400 mb-1 block">
+      <label className="rubriche-filters-dropdown-label text-sm mb-1 block">
         {label}
       </label>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 text-sm border border-zinc-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors min-w-[160px] justify-between"
+        className="rubriche-filters-dropdown-button flex items-center gap-2 px-3 py-1.5 text-sm border rounded-md transition-colors min-w-[160px] justify-between"
       >
         <div className="flex items-center gap-2 flex-1 min-w-0">
           {selectedOption?.icon && (
@@ -74,7 +74,7 @@ export default function CustomDropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-md shadow-lg max-h-60 overflow-auto">
+        <div className="rubriche-filters-dropdown-menu absolute z-50 mt-1 w-full border rounded-md shadow-lg max-h-60 overflow-auto">
           {options.map((option) => {
             const Icon = option.icon;
             const isSelected = option.value === value || (value === undefined && option.value === "all");
@@ -84,9 +84,9 @@ export default function CustomDropdown({
                 key={option.value}
                 type="button"
                 onClick={() => handleSelect(option.value)}
-                className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors ${
+                className={`rubriche-filters-dropdown-item w-full flex items-center gap-2 px-3 py-2 text-sm text-left transition-colors ${
                   isSelected
-                    ? "bg-zinc-100 dark:bg-zinc-700 font-medium"
+                    ? "font-medium"
                     : ""
                 }`}
               >

@@ -97,8 +97,8 @@ export default function RubricheFilters({
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border border-zinc-200 dark:border-zinc-800">
-      <div className="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+    <div className="rubriche-filters-box flex flex-wrap items-center gap-4 mb-6 p-4 rounded-lg">
+      <div className="rubriche-filters-label flex items-center gap-2 text-sm font-medium">
         <Filter className="h-4 w-4" />
         <span>Filtra per:</span>
       </div>
@@ -144,7 +144,7 @@ export default function RubricheFilters({
                 params.set("rubrichePage", "1");
                 router.push(`/newsletter?${params.toString()}`);
               }}
-              className="px-3 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 underline underline-offset-2 whitespace-nowrap"
+              className="rubriche-filters-reset px-3 py-1.5 text-sm underline underline-offset-2 whitespace-nowrap"
             >
               Rimuovi filtri
             </button>
