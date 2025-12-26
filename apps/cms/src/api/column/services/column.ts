@@ -26,7 +26,7 @@ function sortColumnLinks(column: any): any {
 export default factories.createCoreService('api::column.column' as any, ({ strapi }: { strapi: Core.Strapi }) => ({
   async find(params: any) {
     // Usa entityService direttamente per ottenere i dati con le relazioni
-    const results = await strapi.entityService.findMany('api::column.column', {
+    const results = await strapi.entityService.findMany('api::column.column' as any, {
       ...params,
       populate: params?.populate || ['links', 'author'],
     });
@@ -41,7 +41,7 @@ export default factories.createCoreService('api::column.column' as any, ({ strap
 
   async findOne(documentId: any, params: any) {
     // Usa entityService direttamente per ottenere i dati con le relazioni
-    const result = await strapi.entityService.findOne('api::column.column', documentId, {
+    const result = await strapi.entityService.findOne('api::column.column' as any, documentId, {
       ...params,
       populate: params?.populate || ['links', 'author'],
     });
