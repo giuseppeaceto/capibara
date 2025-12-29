@@ -26,6 +26,33 @@ const loadingMessages = [
   "Distribuendo informazione dal basso...",
 ];
 
+const FADE_DURATION = 300;
+const MESSAGE_INTERVAL = 3000;
+const DOTS_INTERVAL = 500;
+const PROGRESS_INTERVAL = 50;
+
+const THEME_COLORS = {
+  dark: {
+    container: '#27272a',
+    bar: 'linear-gradient(to right, #ef4444, #f87171)',
+    text: '#ffffff',
+    dot: '#71717a',
+  },
+  light: {
+    container: '#e4e4e7',
+    bar: 'linear-gradient(to right, #dc2626, #ef4444)',
+    text: '#000000',
+    dot: '#a1a1aa',
+  },
+};
+
+const getProgressIncrement = (current: number): number => {
+  if (current >= 95) return 0.1;
+  if (current >= 80) return 0.3;
+  if (current >= 50) return 0.8;
+  return 1.2;
+};
+
 export default function NewsletterLoading() {
   const [message, setMessage] = useState(loadingMessages[0]);
   const [dots, setDots] = useState('');
@@ -34,66 +61,45 @@ export default function NewsletterLoading() {
   const [opacity, setOpacity] = useState(1);
 
   useEffect(() => {
-    // Determine theme
     const checkTheme = () => {
       if (typeof window !== 'undefined') {
         const theme = document.documentElement.getAttribute('data-theme');
         setIsDark(theme === 'dark');
       }
     };
-    
+
     checkTheme();
-    
-    // Watch for theme changes
+
     const observer = new MutationObserver(checkTheme);
     if (typeof window !== 'undefined') {
       observer.observe(document.documentElement, {
         attributes: true,
-        attributeFilter: ['data-theme', 'class']
+        attributeFilter: ['data-theme', 'class'],
       });
     }
 
-    // Random message on mount
     const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
     setMessage(randomMessage);
 
-    // Animate dots
     const dotsInterval = setInterval(() => {
-      setDots(prev => prev.length >= 3 ? '' : prev + '.');
-    }, 500);
+      setDots((prev) => (prev.length >= 3 ? '' : prev + '.'));
+    }, DOTS_INTERVAL);
 
-    // Change message every 3 seconds with smooth fade transition
     const messageInterval = setInterval(() => {
-      // Fade out
       setOpacity(0);
-      
-      // After fade out completes, change message and fade in
       setTimeout(() => {
         const newMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
         setMessage(newMessage);
         setOpacity(1);
-      }, 300); // Half of transition duration
-    }, 3000);
+      }, FADE_DURATION);
+    }, MESSAGE_INTERVAL);
 
-    // Animate progress bar - single continuous loading
-    // Start fast, then slow down as it approaches 100%
     const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 95) {
-          // Slow down significantly when near completion
-          return Math.min(prev + 0.1, 95);
-        } else if (prev >= 80) {
-          // Slow down when getting close
-          return prev + 0.3;
-        } else if (prev >= 50) {
-          // Medium speed in the middle
-          return prev + 0.8;
-        } else {
-          // Faster at the beginning
-          return prev + 1.2;
-        }
+      setProgress((prev) => {
+        const increment = getProgressIncrement(prev);
+        return Math.min(prev + increment, 95);
       });
-    }, 50);
+    }, PROGRESS_INTERVAL);
 
     return () => {
       clearInterval(dotsInterval);
@@ -103,70 +109,48 @@ export default function NewsletterLoading() {
     };
   }, []);
 
-  const containerBg = isDark ? '#27272a' : '#e4e4e7'; // zinc-800 : zinc-200
-  const barGradient = isDark 
-    ? 'linear-gradient(to right, #ef4444, #f87171)' // red-500 to red-400
-    : 'linear-gradient(to right, #dc2626, #ef4444)'; // red-600 to red-500
-  const textColor = isDark ? '#ffffff' : '#000000';
+  const colors = isDark ? THEME_COLORS.dark : THEME_COLORS.light;
 
   return (
     <MainLayout>
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-8">
         <div className="text-center space-y-6 max-w-md px-4 w-full">
-          {/* Loading message with smooth fade animation */}
-          <p 
+          <p
             className="text-lg font-medium transition-opacity duration-300 ease-in-out"
-            style={{ 
-              color: textColor,
-              opacity: opacity
-            }}
+            style={{ color: colors.text, opacity }}
           >
             {message}{dots}
           </p>
-          
-          {/* Progress bar container */}
-          <div 
+
+          <div
             className="relative w-full max-w-md mx-auto rounded-full overflow-hidden"
             style={{
               height: '20px',
-              backgroundColor: containerBg,
-              minHeight: '20px'
+              backgroundColor: colors.container,
+              minHeight: '20px',
             }}
           >
-            {/* Progress bar fill */}
             <div
               className="absolute top-0 left-0 h-full rounded-full transition-all duration-75 ease-linear"
               style={{
                 width: `${progress}%`,
-                background: barGradient,
-                minWidth: progress > 0 ? '4px' : '0px'
+                background: colors.bar,
+                minWidth: progress > 0 ? '4px' : '0px',
               }}
             />
           </div>
 
-          {/* Animated dots */}
           <div className="flex items-center justify-center gap-2">
-            <div 
-              className="w-2 h-2 rounded-full animate-bounce" 
-              style={{ 
-                animationDelay: '0ms',
-                backgroundColor: isDark ? '#71717a' : '#a1a1aa'
-              }}
-            />
-            <div 
-              className="w-2 h-2 rounded-full animate-bounce" 
-              style={{ 
-                animationDelay: '150ms',
-                backgroundColor: isDark ? '#71717a' : '#a1a1aa'
-              }}
-            />
-            <div 
-              className="w-2 h-2 rounded-full animate-bounce" 
-              style={{ 
-                animationDelay: '300ms',
-                backgroundColor: isDark ? '#71717a' : '#a1a1aa'
-              }}
-            />
+            {[0, 150, 300].map((delay) => (
+              <div
+                key={delay}
+                className="w-2 h-2 rounded-full animate-bounce"
+                style={{
+                  animationDelay: `${delay}ms`,
+                  backgroundColor: colors.dot,
+                }}
+              />
+            ))}
           </div>
         </div>
       </div>
