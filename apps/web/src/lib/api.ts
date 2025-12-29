@@ -723,7 +723,8 @@ export async function getColumns() {
         "populate[2]": "links",
         "populate[3]": "cover",
         "publicationState": "live",
-        "sort[0]": "createdAt:desc",
+        "sort[0]": "publishedAt:desc",
+        "sort[1]": "updatedAt:desc",
       },
       // Note: links.publishDate is automatically populated since links is a component
       revalidate: 60,

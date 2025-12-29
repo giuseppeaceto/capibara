@@ -25,11 +25,20 @@ function sortColumnLinks(column: any): any {
 
 export default factories.createCoreService('api::column.column' as any, ({ strapi }: { strapi: Core.Strapi }) => ({
   async find(params: any) {
-    // Usa entityService direttamente per ottenere i dati con le relazioni
-    // publicationState viene gestito automaticamente da entityService in Strapi 5 se presente nei params
+    // Estrai publicationState dai params
+    const { publicationState, ...restParams } = params || {};
+    
+    // Se publicationState è 'live', aggiungi filtro per publishedAt
+    const filters = { ...restParams.filters };
+    if (publicationState === 'live') {
+      filters.publishedAt = { $notNull: true };
+    }
+    
+    // Usa entityService con filtro esplicito per publishedAt quando publicationState è 'live'
     const results = await strapi.entityService.findMany('api::column.column' as any, {
-      ...params,
-      populate: params?.populate || ['links', 'author'],
+      ...restParams,
+      filters,
+      populate: restParams?.populate || ['links', 'author'],
     });
     
     // Ordina i link per publishDate (più recenti in alto)
@@ -41,11 +50,20 @@ export default factories.createCoreService('api::column.column' as any, ({ strap
   },
 
   async findOne(documentId: any, params: any) {
-    // Usa entityService direttamente per ottenere i dati con le relazioni
-    // publicationState viene gestito automaticamente da entityService in Strapi 5 se presente nei params
+    // Estrai publicationState dai params
+    const { publicationState, ...restParams } = params || {};
+    
+    // Se publicationState è 'live', aggiungi filtro per publishedAt
+    const filters = { ...restParams.filters };
+    if (publicationState === 'live') {
+      filters.publishedAt = { $notNull: true };
+    }
+    
+    // Usa entityService con filtro esplicito per publishedAt quando publicationState è 'live'
     const result = await strapi.entityService.findOne('api::column.column' as any, documentId, {
-      ...params,
-      populate: params?.populate || ['links', 'author'],
+      ...restParams,
+      filters,
+      populate: restParams?.populate || ['links', 'author'],
     });
     
     // Ordina i link per publishDate (più recenti in alto)
