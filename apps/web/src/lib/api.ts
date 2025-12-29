@@ -95,6 +95,11 @@ async function strapiFetch<T>(
   const qs = query ? `?${toQueryString(query)}` : "";
   const url = `${STRAPI_URL}${path}${qs}`;
 
+  // Log all requests in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`🌐 Fetching from Strapi: ${path}`, { query });
+  }
+
   try {
     const res = await fetch(url, {
       cache,
@@ -131,16 +136,12 @@ async function strapiFetch<T>(
 
     const data = await res.json();
     
-    // Debug: log response structure in development
-    if (process.env.NODE_ENV === 'development' && path.includes('episodes')) {
-      console.log(`📦 Strapi response for ${path}:`, {
-        dataLength: data.data?.length ?? 0,
-        firstItem: data.data?.[0] ? {
-          id: data.data[0].id,
-          fullItem: data.data[0],
-          hasAttributes: !!data.data[0].attributes,
-          attributesKeys: data.data[0].attributes ? Object.keys(data.data[0].attributes) : [],
-        } : null,
+    // Debug: log all responses in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`✅ Strapi response for ${path}:`, {
+        dataLength: Array.isArray(data.data) ? data.data.length : (data.data ? 1 : 0),
+        hasMeta: !!data.meta,
+        pagination: data.meta?.pagination,
       });
     }
     
