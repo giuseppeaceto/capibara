@@ -683,6 +683,15 @@ export async function getNewsletterIssues(page = 1, pageSize = 12) {
     },
   );
 
+  // Debug in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('getNewsletterIssues response:', {
+      hasData: !!response.data,
+      dataLength: response.data?.length ?? 0,
+      pagination: response.meta?.pagination,
+    });
+  }
+
   const issues = (response.data?.map((item) => {
     if (item.attributes) {
       return item.attributes;
@@ -716,6 +725,15 @@ export async function getDailyLinks(date?: string) {
     }
   );
 
+  // Debug in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('getDailyLinks response:', {
+      targetDate,
+      hasData: !!response.data,
+      dataLength: response.data?.length ?? 0,
+    });
+  }
+
   return (response.data?.map((item) => {
     if (item.attributes) return item.attributes;
     return item;
@@ -736,14 +754,41 @@ export async function getColumns() {
     }
   );
 
-  return (response.data?.map((item) => {
+  // Debug in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('getColumns response:', {
+      hasData: !!response.data,
+      dataLength: response.data?.length ?? 0,
+      firstItem: response.data?.[0] ? {
+        id: response.data[0].id,
+        hasAttributes: !!response.data[0].attributes,
+        attributesKeys: response.data[0].attributes ? Object.keys(response.data[0].attributes) : [],
+      } : null,
+    });
+  }
+
+  // Always return an array, even if response.data is undefined or empty
+  const columns = (response.data?.map((item) => {
     const column = item.attributes ?? item;
     // Ensure links is always an array, even if not populated
     if (column && !column.links) {
       column.links = [];
     }
+    
+    // Debug in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Processed column:', {
+        title: column.title,
+        slug: column.slug,
+        linksCount: column.links?.length ?? 0,
+        hasAuthor: !!column.author,
+      });
+    }
+    
     return column;
   }) ?? []) as Column[];
+
+  return columns;
 }
 
 // Search function

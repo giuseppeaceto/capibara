@@ -25,21 +25,9 @@ function sortColumnLinks(column: any): any {
 
 export default factories.createCoreService('api::column.column' as any, ({ strapi }: { strapi: Core.Strapi }) => ({
   async find(params: any) {
-    // Estrai publicationState dai params
-    const { publicationState, ...restParams } = params || {};
-    
-    // Se publicationState è 'live', aggiungi filtro per publishedAt
-    const filters = { ...restParams.filters };
-    if (publicationState === 'live') {
-      filters.publishedAt = { $notNull: true };
-    }
-    
-    // Usa entityService con filtro esplicito per publishedAt quando publicationState è 'live'
-    const results = await strapi.entityService.findMany('api::column.column' as any, {
-      ...restParams,
-      filters,
-      populate: restParams?.populate || ['links', 'author'],
-    });
+    // Chiama il servizio di base per gestire publicationState correttamente
+    // Strapi gestisce automaticamente publicationState quando viene passato tramite API REST
+    const results = await strapi.entityService.findMany('api::column.column' as any, params);
     
     // Ordina i link per publishDate (più recenti in alto)
     if (results && Array.isArray(results)) {

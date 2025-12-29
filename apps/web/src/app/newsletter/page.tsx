@@ -181,8 +181,18 @@ export default async function NewsletterPage({
   const filterAuthor = params.filterAuthor;
   const filterDate = params.filterDate;
   const { data: issues, pagination } = await getNewsletterIssues(page, 12);
-  const dailyLinks = await getDailyLinks();
-  const columns = await getColumns();
+  const dailyLinks = await getDailyLinks() || [];
+  const columns = await getColumns() || [];
+
+  // Debug in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Newsletter page data:', {
+      issuesCount: issues?.length || 0,
+      dailyLinksCount: dailyLinks?.length || 0,
+      columnsCount: columns?.length || 0,
+      columnsWithLinks: columns?.filter(c => c.links && c.links.length > 0).length || 0,
+    });
+  }
 
   const selectedColumn = selectedColumnSlug 
     ? columns.find(c => c.slug === selectedColumnSlug)
@@ -192,7 +202,13 @@ export default async function NewsletterPage({
 
   // Extract external metadata for rubric links
   let rubricLinksWithMetadata: any[] = [];
-  let categorizedLinksWithMetadata: any = {};
+  let categorizedLinksWithMetadata: any = {
+    today: [],
+    yesterday: [],
+    twoDaysAgo: [],
+    threeDaysAgo: [],
+    older: []
+  };
   let filteredRubricLinksCount = 0;
 
   if (showAllRubriche) {
