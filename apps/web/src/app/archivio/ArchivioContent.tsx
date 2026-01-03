@@ -203,7 +203,7 @@ export function ArchivioContent({
     ...initialRubricaLinks.map((link, index) => ({
       id: `rubrica-link-${index}-${link.url || link.label}`,
       title: link.label,
-      isoDate: link.publishDate,
+      isoDate: link.publishDate ? link.publishDate.toISOString() : null,
       date: link.publishDate ? formatDate(link.publishDate) : "",
       summary: link.description ?? "",
       tag: "Rubrica",
@@ -273,7 +273,7 @@ export function ArchivioContent({
         ...(results.rubricaLinks?.map((link, index) => ({
           id: `search-rubrica-link-${index}-${link.url || link.label}`,
           title: link.label,
-          isoDate: link.publishDate,
+          isoDate: link.publishDate ? link.publishDate.toISOString() : null,
           date: link.publishDate ? formatDate(link.publishDate) : "",
           summary: link.description ?? "",
           tag: "Rubrica",
