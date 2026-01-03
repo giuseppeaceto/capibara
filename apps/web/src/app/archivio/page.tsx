@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import MainLayout from "@/components/MainLayout";
-import ArchivioContent, { ArchivioContentProps } from "./ArchivioContent";
+import ArchivioContent from "./ArchivioContent";
 import {
   getLatestVideoEpisodes,
   getLatestPodcastEpisodes,
