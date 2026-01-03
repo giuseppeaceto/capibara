@@ -122,7 +122,7 @@ export function ArchivioContent({
       results.newsletters?.length > 0 ||
       results.articles?.length > 0 ||
       results.columns?.length > 0 ||
-      results.rubricaLinks?.length > 0);
+      (results.rubricaLinks && results.rubricaLinks.length > 0));
 
   const showInitialHub = !results && !loading && !query.trim();
 
