@@ -8,7 +8,7 @@ interface DropdownOption {
   value: string;
   label: string;
   icon?: LucideIcon;
-  avatar?: string;
+  avatar?: string | null;
 }
 
 interface CustomDropdownProps {
