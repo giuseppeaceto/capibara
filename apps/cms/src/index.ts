@@ -233,6 +233,7 @@ export default {
     strapi.log.info('💡 Remember to configure public API permissions:');
     strapi.log.info('   Settings > Users & Permissions > Roles > Public');
     strapi.log.info('   Enable "find" and "findOne" for: Show, Video Episode, Podcast Episode, Newsletter Issue, Tag, Partner, Author, Daily Link (including "image"), Column');
+    strapi.log.info('   ⚠️  IMPORTANT: If the editor cannot see authors, make sure "Author" has "find" permission enabled for the Public role or your API token role!');
     
     // Configura automaticamente i permessi per il campo publishDate per tutti i ruoli
     try {

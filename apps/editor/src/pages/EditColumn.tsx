@@ -15,7 +15,7 @@ export default function EditColumnPage() {
     queryKey: ['columns', id],
     queryFn: () =>
       apiClient.findOne('columns', id!, {
-        populate: ['cover', 'author'],
+        populate: ['cover', 'author', 'links'],
       }),
     enabled: !!id,
   });
@@ -88,10 +88,10 @@ export default function EditColumnPage() {
         <div className="card text-center py-12">
           <AlertCircle className="mx-auto text-gray-400 mb-4" size={48} />
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            Colonna non trovata
+            Rubrica non trovata
           </h2>
           <p className="text-gray-600 mb-4">
-            La colonna che stai cercando non esiste o è stata eliminata.
+            La rubrica che stai cercando non esiste o è stata eliminata.
           </p>
           <Link to="/" className="btn-primary inline-block">
             Torna alla Dashboard
@@ -111,9 +111,9 @@ export default function EditColumnPage() {
           <ArrowLeft size={16} />
           <span>Torna alla Dashboard</span>
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Modifica Colonna</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Modifica Rubrica</h1>
         <p className="text-gray-600 mt-1">
-          Modifica i dettagli della colonna
+          Modifica i dettagli della rubrica
         </p>
       </div>
 

@@ -36,14 +36,16 @@ class ApiClient {
 
     // Request interceptor per aggiungere token
     this.client.interceptors.request.use((config) => {
+      // Priorità al token JWT dell'utente autenticato
       const token = this.getToken();
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
-      }
-
-      const apiToken = import.meta.env.VITE_API_TOKEN;
-      if (apiToken) {
-        config.headers.Authorization = `Bearer ${apiToken}`;
+      } else {
+        // Usa API token solo se non c'è un token JWT
+        const apiToken = import.meta.env.VITE_API_TOKEN;
+        if (apiToken) {
+          config.headers.Authorization = `Bearer ${apiToken}`;
+        }
       }
 
       return config;
@@ -92,11 +94,16 @@ class ApiClient {
     id: string | number,
     params?: Record<string, unknown>
   ): Promise<StrapiResponse<T>> {
-    const response = await this.client.get<StrapiResponse<T>>(
-      `/${endpoint}/${id}`,
-      { params }
-    );
-    return response.data;
+    const url = `/${endpoint}/${id}`;
+    console.log(`🌐 API call: GET ${url}`, params);
+    try {
+      const response = await this.client.get<StrapiResponse<T>>(url, { params });
+      console.log(`✅ API response for ${url}:`, response.status);
+      return response.data;
+    } catch (error) {
+      console.error(`❌ API error for ${url}:`, error);
+      throw error;
+    }
   }
 
   async create<T>(
@@ -115,11 +122,28 @@ class ApiClient {
     id: string | number,
     data: unknown
   ): Promise<StrapiResponse<T>> {
-    const response = await this.client.put<StrapiResponse<T>>(
-      `/${endpoint}/${id}`,
-      { data }
-    );
-    return response.data;
+    const url = `/${endpoint}/${id}`;
+    console.log(`🌐 API call: PUT ${url}`, { id, idType: typeof id, data });
+    try {
+      const response = await this.client.put<StrapiResponse<T>>(
+        url,
+        { data }
+      );
+      console.log(`✅ API update response for ${url}:`, response.status);
+      return response.data;
+    } catch (error) {
+      console.error(`❌ API update error for ${url}:`, error);
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { status?: number; data?: unknown; config?: { url?: string } } };
+        console.error('📋 Update error details:', {
+          status: axiosError.response?.status,
+          data: axiosError.response?.data,
+          url: axiosError.response?.config?.url || url,
+          attemptedId: id,
+        });
+      }
+      throw error;
+    }
   }
 
   async delete(endpoint: string, id: string | number): Promise<void> {

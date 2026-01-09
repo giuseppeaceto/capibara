@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { apiClient } from '../lib/api';
-import { FileText, Columns, Clock, CheckCircle2, Edit } from 'lucide-react';
+import { FileText, Columns, Clock, CheckCircle2, Edit, Link as LinkIcon, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
 
@@ -55,65 +55,72 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Recent Articles */}
         <div className="card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
               <FileText size={20} />
-              <span>Articoli Recenti</span>
+              <span>Articoli</span>
             </h2>
             <Link
               to="/articles/new"
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
             >
-              Nuovo →
+              <Plus size={16} />
+              <span>Nuovo</span>
             </Link>
           </div>
 
           {articles?.data && articles.data.length > 0 ? (
             <div className="space-y-3">
-              {articles.data.map((article) => (
-                <Link
-                  key={article.id}
-                  to={`/articles/${article.id}/edit`}
-                  className="block p-3 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-900 truncate">
-                        {article.attributes.title}
-                      </h3>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-xs text-gray-500">
-                          {format(
-                            new Date(article.attributes.updatedAt),
-                            'dd MMM yyyy, HH:mm',
-                            { locale: it }
+              {articles.data
+                .filter((article) => article?.attributes?.title)
+                .map((article) => (
+                  <Link
+                    key={article.id}
+                    to={`/articles/${article.id}/edit`}
+                    className="block p-3 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-gray-900 truncate">
+                          {article.attributes.title || 'Senza titolo'}
+                        </h3>
+                        <div className="flex items-center space-x-2 mt-1">
+                          {article.attributes.updatedAt && (
+                            <span className="text-xs text-gray-500">
+                              {format(
+                                new Date(article.attributes.updatedAt),
+                                'dd MMM yyyy, HH:mm',
+                                { locale: it }
+                              )}
+                            </span>
                           )}
-                        </span>
-                        {article.attributes.publishedAt ? (
-                          <CheckCircle2
-                            size={14}
-                            className="text-green-600"
-                            title="Pubblicato"
-                          />
-                        ) : (
-                          <Clock
-                            size={14}
-                            className="text-gray-400"
-                            title="Draft"
-                          />
-                        )}
+                          {article.attributes.publishedAt ? (
+                            <span title="Pubblicato">
+                              <CheckCircle2
+                                size={14}
+                                className="text-green-600"
+                              />
+                            </span>
+                          ) : (
+                            <span title="Draft">
+                              <Clock
+                                size={14}
+                                className="text-gray-400"
+                              />
+                            </span>
+                          )}
+                        </div>
                       </div>
+                      <Edit
+                        size={16}
+                        className="text-gray-400 ml-2 flex-shrink-0"
+                      />
                     </div>
-                    <Edit
-                      size={16}
-                      className="text-gray-400 ml-2 flex-shrink-0"
-                    />
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ))}
             </div>
           ) : (
             <p className="text-sm text-gray-500 text-center py-4">
@@ -127,65 +134,105 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
               <Columns size={20} />
-              <span>Colonne Recenti</span>
+              <span>Rubriche</span>
             </h2>
             <Link
               to="/columns/new"
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
             >
-              Nuovo →
+              <Plus size={16} />
+              <span>Nuovo</span>
             </Link>
           </div>
 
           {columns?.data && columns.data.length > 0 ? (
             <div className="space-y-3">
-              {columns.data.map((column) => (
-                <Link
-                  key={column.id}
-                  to={`/columns/${column.id}/edit`}
-                  className="block p-3 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-900 truncate">
-                        {column.attributes.title}
-                      </h3>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-xs text-gray-500">
-                          {format(
-                            new Date(column.attributes.updatedAt),
-                            'dd MMM yyyy, HH:mm',
-                            { locale: it }
+              {columns.data
+                .filter((column) => column?.attributes?.title)
+                .map((column) => (
+                  <div
+                    key={column.id}
+                    className="block p-3 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors"
+                  >
+                    <div className="flex items-start justify-between">
+                      <Link
+                        to={`/columns/${column.id}/edit`}
+                        className="flex-1 min-w-0"
+                      >
+                        <h3 className="font-medium text-gray-900 truncate">
+                          {column.attributes.title || 'Senza titolo'}
+                        </h3>
+                        <div className="flex items-center space-x-2 mt-1">
+                          {column.attributes.updatedAt && (
+                            <span className="text-xs text-gray-500">
+                              {format(
+                                new Date(column.attributes.updatedAt),
+                                'dd MMM yyyy, HH:mm',
+                                { locale: it }
+                              )}
+                            </span>
                           )}
-                        </span>
-                        {column.attributes.publishedAt ? (
-                          <CheckCircle2
-                            size={14}
-                            className="text-green-600"
-                            title="Pubblicato"
-                          />
-                        ) : (
-                          <Clock
-                            size={14}
-                            className="text-gray-400"
-                            title="Draft"
-                          />
-                        )}
+                          {column.attributes.publishedAt ? (
+                            <span title="Pubblicato">
+                              <CheckCircle2
+                                size={14}
+                                className="text-green-600"
+                              />
+                            </span>
+                          ) : (
+                            <span title="Draft">
+                              <Clock
+                                size={14}
+                                className="text-gray-400"
+                              />
+                            </span>
+                          )}
+                        </div>
+                      </Link>
+                      <div className="flex items-center gap-2 ml-2 flex-shrink-0">
+                        <Link
+                          to={`/columns/${column.id}/links`}
+                          className="p-1.5 text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded transition-colors"
+                          title="Gestisci link"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <LinkIcon size={16} />
+                        </Link>
+                        <Link
+                          to={`/columns/${column.id}/edit`}
+                          className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded transition-colors"
+                          title="Modifica rubrica"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Edit size={16} />
+                        </Link>
                       </div>
                     </div>
-                    <Edit
-                      size={16}
-                      className="text-gray-400 ml-2 flex-shrink-0"
-                    />
                   </div>
-                </Link>
-              ))}
+                ))}
             </div>
           ) : (
             <p className="text-sm text-gray-500 text-center py-4">
-              Nessuna colonna ancora. Crea la prima!
+              Nessuna rubrica ancora. Crea la prima!
             </p>
           )}
+        </div>
+
+        {/* Newsroom */}
+        <div className="card">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
+              <LinkIcon size={20} />
+              <span>Newsroom</span>
+            </h2>
+            <Link
+              to="/columns/select-links"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
+            >
+              <Plus size={16} />
+              <span>Nuovo</span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

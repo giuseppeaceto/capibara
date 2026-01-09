@@ -508,6 +508,120 @@ body {
   color: #ffffff !important; /* white in dark mode */
 }
 
+/* Force black text for rubrica list titles in light mode, white in dark mode */
+.rubrica-list-title {
+  color: #000000 !important; /* black in light mode */
+}
+
+[data-theme="dark"] .rubrica-list-title {
+  color: #f4f4f5 !important; /* zinc-100 in dark mode */
+}
+
+/* Force black text for rubrica list author in light mode */
+.rubrica-list-author {
+  color: #000000 !important; /* black in light mode */
+}
+
+[data-theme="dark"] .rubrica-list-author {
+  color: #a1a1aa !important; /* zinc-400 in dark mode */
+}
+
+/* Force black text for rubrica list description in light mode */
+.rubrica-list-description {
+  color: #000000 !important; /* black in light mode */
+}
+
+[data-theme="dark"] .rubrica-list-description {
+  color: #a1a1aa !important; /* zinc-400 in dark mode */
+}
+
+/* View toggle styles */
+.view-toggle-container {
+  background-color: #f4f4f5 !important; /* zinc-100 in light mode */
+  border-color: #e4e4e7 !important; /* zinc-200 in light mode */
+}
+
+[data-theme="dark"] .view-toggle-container {
+  background-color: #27272a !important; /* zinc-800 in dark mode */
+  border-color: #3f3f46 !important; /* zinc-700 in dark mode */
+}
+
+.view-toggle-button-active {
+  background-color: #ffffff !important; /* white in light mode */
+  color: #000000 !important; /* black in light mode */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="dark"] .view-toggle-button-active {
+  background-color: #3f3f46 !important; /* zinc-700 in dark mode */
+  color: #f4f4f5 !important; /* zinc-100 in dark mode */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.view-toggle-button-inactive {
+  color: #71717a !important; /* zinc-500 in light mode */
+}
+
+[data-theme="dark"] .view-toggle-button-inactive {
+  color: #a1a1aa !important; /* zinc-400 in dark mode */
+}
+
+.view-toggle-button-inactive:hover {
+  color: #000000 !important; /* black in light mode */
+}
+
+[data-theme="dark"] .view-toggle-button-inactive:hover {
+  color: #f4f4f5 !important; /* zinc-100 in dark mode */
+}
+
+/* Rubriche pagination dots */
+.rubriche-pagination-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rubriche-pagination-dot-active {
+  background-color: #000000 !important; /* black in light mode */
+  width: 24px;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] .rubriche-pagination-dot-active {
+  background-color: #f4f4f5 !important; /* zinc-100 in dark mode */
+}
+
+.rubriche-pagination-dot-inactive {
+  background-color: #d4d4d8 !important; /* zinc-300 in light mode */
+  opacity: 0.5;
+}
+
+[data-theme="dark"] .rubriche-pagination-dot-inactive {
+  background-color: #71717a !important; /* zinc-500 in dark mode */
+  opacity: 0.5;
+}
+
+.rubriche-pagination-dot-inactive:hover {
+  opacity: 0.8;
+  transform: scale(1.2);
+}
+
+/* Badge style for rubrica list rubrica name */
+.rubrica-list-rubrica-badge {
+  background-color: #f4f4f5 !important; /* zinc-100 in light mode */
+  color: #000000 !important; /* black text in light mode */
+  border: 1px solid #e4e4e7 !important; /* zinc-200 border in light mode */
+}
+
+[data-theme="dark"] .rubrica-list-rubrica-badge {
+  background-color: #27272a !important; /* zinc-800 in dark mode */
+  color: #f4f4f5 !important; /* zinc-100 text in dark mode */
+  border: 1px solid #3f3f46 !important; /* zinc-700 border in dark mode */
+}
+
 /* Force black text for newsletter description text in light mode */
 .newsletter-description-text {
   color: rgb(24 24 27) !important; /* zinc-900 */

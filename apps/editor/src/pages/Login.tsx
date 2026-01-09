@@ -1,5 +1,5 @@
-import { useState, useEffect, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, FormEvent } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { AlertCircle } from 'lucide-react';
 
@@ -8,21 +8,31 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuthStore();
+  const { login, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  const hasRedirected = useRef(false);
 
-  // Check if API token is configured (skip login)
+  // Check if already authenticated or API token is set (only once)
   useEffect(() => {
     const apiToken = import.meta.env.VITE_API_TOKEN;
-    if (apiToken) {
-      // Already authenticated with API token
+    if ((apiToken || isAuthenticated) && !hasRedirected.current && location.pathname === '/login') {
+      hasRedirected.current = true;
       navigate('/', { replace: true });
+      return;
     }
-  }, [navigate]);
+  }, [navigate, isAuthenticated, location.pathname]);
 
-  // Don't render login form if API token is set
+  // Reset redirect flag if we're not authenticated anymore
+  useEffect(() => {
+    if (!isAuthenticated && location.pathname === '/login') {
+      hasRedirected.current = false;
+    }
+  }, [isAuthenticated, location.pathname]);
+
+  // Don't render login form if already authenticated or API token is set
   const apiToken = import.meta.env.VITE_API_TOKEN;
-  if (apiToken) {
+  if (apiToken || isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>

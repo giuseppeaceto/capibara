@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../../lib/api';
 import ImageUpload from '../ui/ImageUpload';
@@ -45,25 +45,57 @@ export default function ColumnForm({
   });
 
   // Load authors
-  const { data: authorsData, error: authorsError } = useQuery({
+  const { data: authorsData, error: authorsError, isLoading: authorsLoading } = useQuery({
     queryKey: ['authors'],
-    queryFn: () =>
-      apiClient.find<{ id: number; attributes: { name: string } }>('authors', {
-        pagination: { limit: 100 },
-        publicationState: 'preview', // Include draft content
-        sort: ['name:asc'],
-      }),
+    queryFn: async () => {
+      try {
+        const result = await apiClient.find<{ 
+          id: number; 
+          attributes: { 
+            name: string;
+            avatar?: {
+              data?: {
+                id: number;
+                attributes?: {
+                  url?: string;
+                };
+              };
+            };
+          } 
+        }>('authors', {
+          pagination: { limit: 100 },
+          publicationState: 'preview', // Include draft content
+          sort: ['name:asc'],
+          populate: ['avatar'], // Popola l'avatar
+        });
+        console.log('✅ Authors loaded successfully:', result);
+        return result;
+      } catch (error) {
+        console.error('❌ Error fetching authors:', error);
+        throw error;
+      }
+    },
   });
 
   // Debug: log authors data
   useEffect(() => {
     if (authorsError) {
-      console.error('Error loading authors:', authorsError);
+      console.error('❌ Error loading authors:', authorsError);
+      if ('response' in authorsError && authorsError.response) {
+        console.error('Response status:', authorsError.response.status);
+        console.error('Response data:', authorsError.response.data);
+      }
     }
     if (authorsData) {
-      console.log('Authors data:', authorsData);
+      console.log('✅ Authors data loaded:', authorsData);
+      console.log('Authors count:', authorsData.data?.length || 0);
+      console.log('First author structure:', authorsData.data?.[0]);
+      console.log('First author attributes:', authorsData.data?.[0]?.attributes);
     }
-  }, [authorsData, authorsError]);
+    if (authorsLoading) {
+      console.log('⏳ Loading authors...');
+    }
+  }, [authorsData, authorsError, authorsLoading]);
 
   // Initialize form with existing data
   useEffect(() => {
@@ -90,7 +122,14 @@ export default function ColumnForm({
               }
             : null,
         author: attrs.author?.data?.id || null,
-        links: (attrs.links || []) as LinkItem[],
+        links: Array.isArray(attrs.links)
+          ? attrs.links.map((link: any) => ({
+              label: link?.label || link?.attributes?.label || '',
+              url: link?.url || link?.attributes?.url || '',
+              description: link?.description || link?.attributes?.description || '',
+              publishDate: link?.publishDate || link?.attributes?.publishDate || '',
+            }))
+          : [],
       });
     }
   }, [initialData]);
@@ -144,11 +183,65 @@ export default function ColumnForm({
     await onSubmit(formData);
   };
 
-  const authorOptions =
-    authorsData?.data.map((author) => ({
-      value: author.id,
-      label: author.attributes.name || `Author #${author.id}`,
-    })) || [];
+  const authorOptions = useMemo(() => {
+    if (!authorsData?.data || !Array.isArray(authorsData.data)) {
+      console.log('⚠️ No authors data available or data is not an array');
+      return [];
+    }
+
+    console.log('📝 Processing authors data:', authorsData.data);
+    console.log('📝 First author sample:', JSON.stringify(authorsData.data[0], null, 2));
+    
+    const options = authorsData.data
+      .map((author, index) => {
+        // Handle different possible structures
+        const authorId = author?.id ?? author?.documentId;
+        const authorAttributes = author?.attributes ?? author;
+        
+        if (!authorId) {
+          console.log(`⚠️ Author at index ${index} has no ID:`, author);
+          return null;
+        }
+
+        if (!authorAttributes) {
+          console.log(`⚠️ Author at index ${index} has no attributes:`, author);
+          return null;
+        }
+
+        const authorName = authorAttributes?.name;
+        if (!authorName) {
+          console.log(`⚠️ Author at index ${index} has no name:`, author);
+          // Still include it but with a fallback label
+        }
+
+        const avatarData = authorAttributes?.avatar;
+        const avatarUrl = avatarData?.data?.attributes?.url 
+          ?? avatarData?.attributes?.url 
+          ?? avatarData?.url
+          ?? null;
+        
+        const fullAvatarUrl = avatarUrl 
+          ? (avatarUrl.startsWith('http') 
+              ? avatarUrl 
+              : `${import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337'}${avatarUrl}`)
+          : null;
+        
+        const option = {
+          value: Number(authorId), // Ensure it's a number
+          label: authorName || `Author #${authorId}`,
+          avatar: fullAvatarUrl,
+        };
+        
+        console.log(`✅ Created option for author ${index}:`, option);
+        return option;
+      })
+      .filter((option): option is { value: number; label: string; avatar: string | null } => option !== null);
+    
+    console.log('📋 Final author options:', options);
+    console.log('📊 Options count:', options.length);
+    
+    return options;
+  }, [authorsData]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -233,7 +326,9 @@ export default function ColumnForm({
       {/* Links */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="label">Link</label>
+          <label className="label">
+            Link <span className="text-sm font-normal text-gray-500">(collegamenti esterni)</span>
+          </label>
           <button
             type="button"
             onClick={handleAddLink}
@@ -305,7 +400,20 @@ export default function ColumnForm({
                     }
                     className="input text-sm"
                     rows={2}
-                    placeholder="Descrizione opzionale..."
+                    placeholder="Descrizione opzionale del link..."
+                  />
+                </div>
+
+                <div>
+                  <label className="label text-xs">Data di pubblicazione (opzionale)</label>
+                  <input
+                    type="datetime-local"
+                    value={link.publishDate ? new Date(link.publishDate).toISOString().slice(0, 16) : ''}
+                    onChange={(e) =>
+                      handleLinkChange(index, 'publishDate', e.target.value ? new Date(e.target.value).toISOString() : '')
+                    }
+                    className="input text-sm"
+                    placeholder="Data di pubblicazione del link"
                   />
                 </div>
               </div>

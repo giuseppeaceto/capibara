@@ -69,9 +69,9 @@ export default function CreateColumnPage() {
           <ArrowLeft size={16} />
           <span>Torna alla Dashboard</span>
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Nuova Colonna</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Nuova Rubrica</h1>
         <p className="text-gray-600 mt-1">
-          Crea una nuova colonna con link curati
+          Crea una nuova rubrica con link curati
         </p>
       </div>
 
