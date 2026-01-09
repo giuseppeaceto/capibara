@@ -22,10 +22,12 @@ export default [
       origin: [
         process.env.FRONTEND_URL || 'http://localhost:3000',
         process.env.EDITOR_URL || 'http://localhost:3001',
+        'https://capibara-cms.netlify.app',
         'http://localhost:3000',
         'http://localhost:3001',
         'http://localhost:1337',
       ],
+      credentials: true,
     },
   },
   'strapi::poweredBy',
