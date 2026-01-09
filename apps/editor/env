@@ -1,0 +1,14 @@
+# Strapi CMS Configuration
+VITE_STRAPI_URL=https://capibara-1z0m.onrender.com
+
+# Authentication
+# Option 1: Use API Token (recommended for PWA)
+VITE_API_TOKEN=81afde9533d95805c9af0845029202603925faeb94a74b25da75262fb4029db1d54079207877f407cb5245ef363c0aee26db6acf83d93253c1982980d3875fd49a7491bdb7e4771b902221080dc29113ce1546f2979ccf9f6253215c25cd8d0805af12a40218fe6bd322e35840dddc0a275ae78f7cd6430538eea695fe8fd253
+
+
+# Option 2: Use JWT (if using user authentication)
+# Leave empty if using API_TOKEN
+# VITE_JWT_SECRET=
+
+# Environment
+VITE_APP_ENV=development

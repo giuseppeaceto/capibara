@@ -29,4 +29,20 @@ services:
         generateValue: true
       - key: ENCRYPTION_KEY
         generateValue: true
+      # CORS: aggiungi EDITOR_URL quando la PWA è deployata
+      # - key: EDITOR_URL
+      #   value: https://capibara-editor.vercel.app
+
+  # PWA Editor (Static Site) - Opzionale
+  # Decommenta se vuoi deployare l'editor su Render invece di Vercel/Netlify
+  # - type: web
+  #   name: capibara-editor
+  #   runtime: static
+  #   buildCommand: cd apps/editor && npm ci && npm run build
+  #   staticPublishPath: apps/editor/dist
+  #   envVars:
+  #     - key: VITE_STRAPI_URL
+  #       value: https://capibara-cms.onrender.com
+  #     - key: VITE_API_TOKEN
+  #       sync: false  # Aggiungi manualmente in Render Dashboard
 
