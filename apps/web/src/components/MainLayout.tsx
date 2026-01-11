@@ -127,7 +127,7 @@ const primaryNav: NavLink[] = [
   },
   { label: "Archivio", icon: Archive, href: "/archivio" },
   {
-    label: "Conflitti",
+    label: "Mappa dei conflitti",
     icon: Map,
     href: "/conflitti",
     color: "bg-red-500/20 border-red-500/50 text-white",

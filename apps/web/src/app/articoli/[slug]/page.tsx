@@ -23,12 +23,23 @@ export async function generateMetadata({
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.media";
   const articleUrl = `${siteUrl}/articoli/${slug}`;
   
+  // Helper per garantire URL assoluto per Open Graph
+  const ensureAbsoluteUrl = (url: string | null | undefined): string | null => {
+    if (!url) return null;
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
+    }
+    // Se è un path relativo, costruisci URL assoluto
+    return url.startsWith("/") ? `${siteUrl}${url}` : `${siteUrl}/${url}`;
+  };
+  
   // Usa metaImage dal SEO se disponibile, altrimenti heroImage, altrimenti logo
   const seoImageUrl = article.seo?.metaImage?.data?.attributes?.url
-    ? getStrapiMediaUrl(article.seo.metaImage.data.attributes.url)
+    ? ensureAbsoluteUrl(getStrapiMediaUrl(article.seo.metaImage.data.attributes.url))
     : null;
   const heroImageUrl = article.heroImage?.data?.attributes?.url
-    ? getStrapiMediaUrl(article.heroImage.data.attributes.url) || `${siteUrl}${article.heroImage.data.attributes.url}`
+    ? ensureAbsoluteUrl(getStrapiMediaUrl(article.heroImage.data.attributes.url)) || 
+      ensureAbsoluteUrl(article.heroImage.data.attributes.url)
     : null;
   const imageUrl = seoImageUrl || heroImageUrl || `${siteUrl}/logo_capibara.png`;
 

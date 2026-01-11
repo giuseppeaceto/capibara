@@ -25,7 +25,7 @@ export const metadata: Metadata = {
       "Capibara è una media company indipendente: video, podcast, articoli e newsletter per raccontare lavoro, diritti, conflitti sociali e nuove forme di organizzazione.",
     images: [
       {
-        url: "/logo_capibara.png",
+        url: new URL("/logo_capibara.png", process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.media").toString(),
         width: 1200,
         height: 630,
         alt: "Capibara Logo",

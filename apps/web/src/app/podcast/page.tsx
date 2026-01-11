@@ -1,8 +1,62 @@
-import { getPodcastEpisodes, extractHeroImage } from "@/lib/api";
+import { getPodcastEpisodes, getLatestPodcastEpisodes, extractHeroImage, getStrapiMediaUrl } from "@/lib/api";
 import MainLayout from "@/components/MainLayout";
 import ContentCard, { formatDate, getKindAccent } from "@/components/ContentCard";
 import type { Show } from "@/lib/api";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.media";
+  
+  // Helper per garantire URL assoluto per Open Graph
+  const ensureAbsoluteUrl = (url: string | null | undefined): string | null => {
+    if (!url) return null;
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
+    }
+    return url.startsWith("/") ? `${siteUrl}${url}` : `${siteUrl}/${url}`;
+  };
+  
+  // Ottieni il primo podcast per usare la sua immagine come anteprima
+  const latestPodcasts = await getLatestPodcastEpisodes(1);
+  let ogImage = `${siteUrl}/logo_capibara.png`;
+  
+  if (latestPodcasts.length > 0 && latestPodcasts[0]?.heroImage) {
+    const { url } = extractHeroImage(latestPodcasts[0].heroImage);
+    const absoluteUrl = ensureAbsoluteUrl(url);
+    if (absoluteUrl) {
+      ogImage = absoluteUrl;
+    }
+  }
+  
+  return {
+    metadataBase: new URL(siteUrl),
+    title: "Podcast",
+    description: "Tutti gli episodi podcast di Capibara: approfondimenti, interviste e storie su lavoro, diritti e conflitti sociali.",
+    openGraph: {
+      type: "website",
+      locale: "it_IT",
+      url: `${siteUrl}/podcast`,
+      siteName: "Capibara",
+      title: "Podcast | Capibara",
+      description: "Tutti gli episodi podcast di Capibara: approfondimenti, interviste e storie su lavoro, diritti e conflitti sociali.",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: "Podcast Capibara",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Podcast | Capibara",
+      description: "Tutti gli episodi podcast di Capibara: approfondimenti, interviste e storie su lavoro, diritti e conflitti sociali.",
+      images: [ogImage],
+    },
+  };
+}
 
 export default async function PodcastPage({
   searchParams,

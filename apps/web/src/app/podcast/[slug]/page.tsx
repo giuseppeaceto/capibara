@@ -22,12 +22,22 @@ export async function generateMetadata({
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.media";
   const podcastUrl = `${siteUrl}/podcast/${slug}`;
   
+  // Helper per garantire URL assoluto per Open Graph
+  const ensureAbsoluteUrl = (url: string | null | undefined): string | null => {
+    if (!url) return null;
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
+    }
+    // Se è un path relativo, costruisci URL assoluto
+    return url.startsWith("/") ? `${siteUrl}${url}` : `${siteUrl}/${url}`;
+  };
+  
   // Usa metaImage dal SEO se disponibile, altrimenti heroImage, altrimenti logo
   const seoImageUrl = episode.seo?.metaImage?.data?.attributes?.url
-    ? getStrapiMediaUrl(episode.seo.metaImage.data.attributes.url)
+    ? ensureAbsoluteUrl(getStrapiMediaUrl(episode.seo.metaImage.data.attributes.url))
     : null;
   const { url: heroImageUrl } = extractHeroImage(episode.heroImage);
-  const finalImageUrl = seoImageUrl || heroImageUrl || `${siteUrl}/logo_capibara.png`;
+  const finalImageUrl = seoImageUrl || ensureAbsoluteUrl(heroImageUrl) || `${siteUrl}/logo_capibara.png`;
 
   // Usa metaTitle dal SEO se disponibile, altrimenti title
   const metaTitle = episode.seo?.metaTitle || episode.title;
