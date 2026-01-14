@@ -233,26 +233,9 @@ export default async function ArticlePage({
                 {author.bio}
               </p>
             )}
-            <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-zinc-500">
-              {article.publishDate && (
-                <span className="uppercase tracking-wide">
-                  {new Date(article.publishDate).toLocaleDateString("it-IT", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </span>
-              )}
-              {article.readingTime && (
-                <span className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  {article.readingTime} min di lettura
-                </span>
-              )}
-            </div>
             {author && (
               <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-zinc-500">
-                <div className="flex items-center gap-2 ml-auto">
+                <div className="flex items-center gap-2">
                   {author.instagram && (
                     <a
                       href={author.instagram}
@@ -300,6 +283,23 @@ export default async function ArticlePage({
                 </div>
               </div>
             )}
+            <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-zinc-500">
+              {article.publishDate && (
+                <span className="uppercase tracking-wide">
+                  {new Date(article.publishDate).toLocaleDateString("it-IT", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </span>
+              )}
+              {article.readingTime && (
+                <span className="flex items-center gap-1">
+                  <Clock className="h-4 w-4" />
+                  {article.readingTime} min di lettura
+                </span>
+              )}
+            </div>
           </div>
 
           {article.excerpt && (
