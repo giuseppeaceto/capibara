@@ -307,7 +307,13 @@ export default async function Home() {
               </Link>
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {validVideoEpisodes.map((episode) => {
+              {validVideoEpisodes
+                .sort((a, b) => {
+                  const dateA = a.publishDate ? new Date(a.publishDate).getTime() : 0;
+                  const dateB = b.publishDate ? new Date(b.publishDate).getTime() : 0;
+                  return dateB - dateA; // Most recent first
+                })
+                .map((episode) => {
                 const showData = episode.show?.data;
                 const showKind = 
                   (showData?.attributes?.kind as Show["kind"]) ?? "video";
