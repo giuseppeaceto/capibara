@@ -83,14 +83,14 @@ export default async function Home() {
                   Vedi tutto →
                 </Link>
               </div>
-              <div className="flex flex-row gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {latestRubricaLinks.slice(0, 4).map((link, index) => {
                   const columnTitle = link.column?.title || "Rubrica";
                   
                   return (
                     <article
                       key={`${link.column?.slug}-${index}`}
-                      className="content-box p-4 space-y-3 hover:border-zinc-900 dark:hover:border-zinc-100 transition-all duration-200 group flex-1 min-w-0"
+                      className="content-box p-4 space-y-3 hover:border-zinc-900 dark:hover:border-zinc-100 transition-all duration-200 group min-w-0"
                     >
                       <div className="space-y-2">
                         <div className="text-[10px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 line-clamp-1">
