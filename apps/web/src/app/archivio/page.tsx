@@ -10,6 +10,10 @@ import {
   getPublishedRubricaLinks,
 } from "@/lib/api";
 
+// ISR: rigenera l'archivio ogni 10 minuti (600 secondi)
+// L'archivio cambia meno frequentemente della homepage
+export const revalidate = 600;
+
 export default async function ArchivioPage() {
   const [videos, podcasts, newsletters, articles, columns, rubricaLinks] = await Promise.all([
     getLatestVideoEpisodes(6),

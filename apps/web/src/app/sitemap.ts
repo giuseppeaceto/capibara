@@ -5,6 +5,10 @@ import {
   getLatestPodcastEpisodes,
 } from "@/lib/api";
 
+// ISR: rigenera il sitemap ogni 6 ore (21600 secondi)
+// Il sitemap non cambia frequentemente, quindi possiamo usare una cache molto lunga
+export const revalidate = 21600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://capibara.media";
 

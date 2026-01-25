@@ -90,7 +90,7 @@ const toQueryString = (params: Record<string, string | number | boolean | undefi
 
 async function strapiFetch<T>(
   path: string,
-  { cache = "force-cache", revalidate = 60, headers, query }: FetchOptions = {},
+  { cache = "force-cache", revalidate = 300, headers, query }: FetchOptions = {},
 ): Promise<T> {
   const qs = query ? `?${toQueryString(query)}` : "";
   const url = `${STRAPI_URL}${path}${qs}`;
@@ -376,7 +376,7 @@ export async function getLatestVideoEpisodes(limit = 6) {
         "pagination[pageSize]": limit,
         "sort[0]": "publishDate:desc",
       },
-      revalidate: 60,
+      revalidate: 300, // Video episodes: cache 5 minuti invece di 1 minuto
     },
   );
 
@@ -402,7 +402,7 @@ export async function getLatestPodcastEpisodes(limit = 4) {
         "pagination[pageSize]": limit,
         "sort[0]": "publishDate:desc",
       },
-      revalidate: 60,
+      revalidate: 300, // Podcast episodes: cache 5 minuti invece di 1 minuto
     },
   );
 
@@ -429,7 +429,7 @@ export async function getPremiumNewsletterIssues(limit = 3) {
         "pagination[pageSize]": limit,
         "sort[0]": "publishDate:desc",
       },
-      revalidate: 120,
+      revalidate: 600, // Newsletter premium cambiano raramente, cache più lunga
     },
   );
 
@@ -454,7 +454,7 @@ export async function getVideoEpisodeBySlug(slug: string) {
         "publicationState": "live",
         "filters[slug][$eq]": slug,
       },
-      revalidate: 60,
+      revalidate: 3600, // Singoli episodi: cache 1 ora (cambiano raramente dopo pubblicazione)
     },
   );
 
@@ -471,7 +471,7 @@ export async function getPodcastEpisodeBySlug(slug: string) {
         "publicationState": "live",
         "filters[slug][$eq]": slug,
       },
-      revalidate: 60,
+      revalidate: 3600, // Singoli episodi: cache 1 ora (cambiano raramente dopo pubblicazione)
     },
   );
 
@@ -488,7 +488,7 @@ export async function getNewsletterIssueBySlug(slug: string) {
         "publicationState": "live",
         "filters[slug][$eq]": slug,
       },
-      revalidate: 60,
+      revalidate: 3600, // Singole newsletter: cache 1 ora (cambiano raramente dopo pubblicazione)
     },
   );
 
@@ -511,7 +511,7 @@ export async function getLatestArticles(limit = 6) {
         "pagination[pageSize]": limit,
         "sort[0]": "publishDate:desc",
       },
-      revalidate: 60,
+      revalidate: 300, // Articoli recenti: cache 5 minuti invece di 1 minuto
     },
   );
 
@@ -539,7 +539,7 @@ export async function getArticles(page = 1, pageSize = 12) {
         "pagination[pageSize]": pageSize,
         "sort[0]": "publishDate:desc",
       },
-      revalidate: 60,
+      revalidate: 300, // Lista articoli paginata: cache 5 minuti invece di 1 minuto
     },
   );
 
@@ -575,7 +575,7 @@ export async function getArticleBySlug(slug: string) {
         "publicationState": "live",
         "filters[slug][$eq]": slug,
       },
-      revalidate: 60,
+      revalidate: 3600, // Singoli articoli: cache 1 ora (cambiano raramente dopo pubblicazione)
     },
   );
 
@@ -624,7 +624,7 @@ export async function getVideoEpisodes(page = 1, pageSize = 12) {
         "pagination[pageSize]": pageSize,
         "sort[0]": "publishDate:desc",
       },
-      revalidate: 60,
+      revalidate: 300, // Lista video paginata: cache 5 minuti invece di 1 minuto
     },
   );
 
@@ -657,7 +657,7 @@ export async function getPodcastEpisodes(page = 1, pageSize = 12) {
         "pagination[pageSize]": pageSize,
         "sort[0]": "publishDate:desc",
       },
-      revalidate: 60,
+      revalidate: 300, // Lista podcast paginata: cache 5 minuti invece di 1 minuto
     },
   );
 
@@ -690,7 +690,7 @@ export async function getNewsletterIssues(page = 1, pageSize = 12) {
         "pagination[pageSize]": pageSize,
         "sort[0]": "publishDate:desc",
       },
-      revalidate: 60,
+      revalidate: 300, // Lista newsletter paginata: cache 5 minuti invece di 1 minuto
     },
   );
 
@@ -732,7 +732,7 @@ export async function getDailyLinks(date?: string) {
         "sort[0]": "createdAt:desc",
         "populate": "image",
       },
-      revalidate: 60,
+      revalidate: 300, // Daily links: cache 5 minuti invece di 1 minuto
     }
   );
 
@@ -764,7 +764,7 @@ export async function getColumns() {
         "sort[0]": "publishedAt:desc",
         "sort[1]": "updatedAt:desc",
       },
-      revalidate: 60,
+      revalidate: 600, // Columns cambiano raramente, cache più lunga (10 minuti)
     }
   );
 
@@ -944,7 +944,7 @@ export async function searchContent(query: string, page = 1, pageSize = 12) {
           "pagination[pageSize]": pageSize,
           "sort[0]": "publishDate:desc",
         },
-        revalidate: 60,
+        revalidate: 300, // Search: cache 5 minuti invece di 1 minuto
       },
     ),
     strapiFetch<StrapiPaginatedResponse<PodcastEpisode>>(
@@ -959,7 +959,7 @@ export async function searchContent(query: string, page = 1, pageSize = 12) {
           "pagination[pageSize]": pageSize,
           "sort[0]": "publishDate:desc",
         },
-        revalidate: 60,
+        revalidate: 300, // Search: cache 5 minuti invece di 1 minuto
       },
     ),
     strapiFetch<StrapiPaginatedResponse<NewsletterIssue>>(
@@ -974,7 +974,7 @@ export async function searchContent(query: string, page = 1, pageSize = 12) {
           "pagination[pageSize]": pageSize,
           "sort[0]": "publishDate:desc",
         },
-        revalidate: 60,
+        revalidate: 300, // Search: cache 5 minuti invece di 1 minuto
       },
     ),
     strapiFetch<StrapiPaginatedResponse<Article>>(
@@ -990,7 +990,7 @@ export async function searchContent(query: string, page = 1, pageSize = 12) {
           "pagination[pageSize]": pageSize,
           "sort[0]": "publishDate:desc",
         },
-        revalidate: 60,
+        revalidate: 300, // Search: cache 5 minuti invece di 1 minuto
       },
     ),
     strapiFetch<StrapiPaginatedResponse<Column>>(
@@ -1004,7 +1004,7 @@ export async function searchContent(query: string, page = 1, pageSize = 12) {
           "pagination[page]": page,
           "pagination[pageSize]": pageSize,
         },
-        revalidate: 60,
+        revalidate: 300, // Search: cache 5 minuti invece di 1 minuto
       },
     ),
   ]);
@@ -1166,7 +1166,7 @@ export async function getAuthors() {
         "publicationState": "live",
         "sort[0]": "name:asc",
       },
-      revalidate: 300,
+      revalidate: 3600, // Authors cambiano molto raramente, cache 1 ora
     },
   );
 

@@ -82,6 +82,10 @@ export const metadata: Metadata = {
   },
 };
 
+// ISR: rigenera la homepage ogni 5 minuti (300 secondi)
+// Questo riduce significativamente gli ISR writes su Vercel
+export const revalidate = 300;
+
 export default async function Home() {
   const [videoEpisodes, latestVideo, podcastDrops, premiumLetters, articles, latestRubricaLinks, recentlyUpdatedColumns] = await Promise.all([
     getLatestVideoEpisodes(3),

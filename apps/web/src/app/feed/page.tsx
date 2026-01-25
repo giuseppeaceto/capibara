@@ -10,6 +10,9 @@ import ContentCard, { formatDate, getKindAccent } from "@/components/ContentCard
 import { getVideoPreviewImageUrl } from "@/lib/youtube";
 import type { Show } from "@/lib/api";
 
+// ISR: rigenera il feed ogni 5 minuti (300 secondi)
+export const revalidate = 300;
+
 export default async function FeedPage() {
   const [videoEpisodes, podcastDrops, premiumLetters, articles] = await Promise.all([
     getLatestVideoEpisodes(6),
