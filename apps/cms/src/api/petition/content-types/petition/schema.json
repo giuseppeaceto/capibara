@@ -1,0 +1,87 @@
+{
+  "kind": "collectionType",
+  "collectionName": "petitions",
+  "info": {
+    "singularName": "petition",
+    "pluralName": "petitions",
+    "displayName": "Petition",
+    "description": "Petizioni e campagne di raccolta firme"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "content-manager": {
+      "visible": true
+    },
+    "content-type-builder": {
+      "visible": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "body": {
+      "type": "richtext"
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "publishDate": {
+      "type": "datetime"
+    },
+    "expiryDate": {
+      "type": "datetime",
+      "description": "Data di scadenza della petizione (opzionale)"
+    },
+    "targetSignatures": {
+      "type": "integer",
+      "default": 1000,
+      "description": "Obiettivo numero di firme"
+    },
+    "currentSignatures": {
+      "type": "integer",
+      "default": 0,
+      "description": "Numero attuale di firme raccolte"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true,
+      "description": "Petizione attiva o chiusa"
+    },
+    "externalUrl": {
+      "type": "string",
+      "description": "URL esterno per firmare la petizione (opzionale)"
+    },
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::author.author",
+      "inversedBy": "petitions"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag",
+      "inversedBy": "petitions"
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
+  }
+}

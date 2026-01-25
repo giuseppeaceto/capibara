@@ -60,6 +60,12 @@
       "relation": "manyToMany",
       "target": "api::article.article",
       "mappedBy": "tags"
+    },
+    "petitions": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::petition.petition",
+      "mappedBy": "tags"
     }
   }
 }

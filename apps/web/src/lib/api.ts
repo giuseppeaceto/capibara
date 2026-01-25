@@ -339,6 +339,41 @@ type Article = {
   seo?: SeoComponent | null;
 };
 
+type Petition = {
+  title: string;
+  slug: string;
+  description?: string | null;
+  body?: string | null;
+  publishDate?: string | null;
+  expiryDate?: string | null;
+  targetSignatures?: number | null;
+  currentSignatures?: number | null;
+  isActive?: boolean;
+  externalUrl?: string | null;
+  author?: {
+    data: {
+      attributes: Author;
+    } | null;
+  } | null;
+  heroImage?: {
+    data: {
+      attributes: {
+        url: string;
+        alternativeText?: string | null;
+      };
+    };
+  } | null;
+  tags?: {
+    data: Array<{
+      attributes: {
+        name: string;
+        slug: string;
+      };
+    }>;
+  } | null;
+  seo?: SeoComponent | null;
+};
+
 export async function getFeaturedShows(limit = 4) {
   const response = await strapiFetch<StrapiCollectionResponse<Show>>(
     "/api/shows",
@@ -1076,6 +1111,96 @@ export async function searchContent(query: string, page = 1, pageSize = 12) {
   };
 }
 
+// Petitions
+export async function getLatestPetitions(limit = 6) {
+  const now = new Date().toISOString();
+  const response = await strapiFetch<StrapiCollectionResponse<Petition>>(
+    "/api/petitions",
+    {
+      query: {
+        "populate[0]": "author",
+        "populate[1]": "author.avatar",
+        "populate[2]": "heroImage",
+        "populate[3]": "tags",
+        "publicationState": "live",
+        "filters[publishDate][$lte]": now,
+        "filters[isActive][$eq]": true,
+        "pagination[pageSize]": limit,
+        "sort[0]": "publishDate:desc",
+      },
+      revalidate: 300, // Petizioni: cache 5 minuti
+    },
+  );
+
+  return (response.data?.map((item) => {
+    if (item.attributes) {
+      return item.attributes;
+    }
+    return item;
+  }) ?? []) as Petition[];
+}
+
+export async function getPetitions(page = 1, pageSize = 12) {
+  const now = new Date().toISOString();
+  const response = await strapiFetch<StrapiPaginatedResponse<Petition>>(
+    "/api/petitions",
+    {
+      query: {
+        "populate[0]": "author",
+        "populate[1]": "author.avatar",
+        "populate[2]": "heroImage",
+        "populate[3]": "tags",
+        "publicationState": "live",
+        "filters[publishDate][$lte]": now,
+        "filters[isActive][$eq]": true,
+        "pagination[page]": page,
+        "pagination[pageSize]": pageSize,
+        "sort[0]": "publishDate:desc",
+      },
+      revalidate: 300, // Lista petizioni paginata: cache 5 minuti
+    },
+  );
+
+  const petitions = (response.data?.map((item) => {
+    if (item.attributes) {
+      return item.attributes;
+    }
+    return item;
+  }) ?? []) as Petition[];
+
+  return {
+    data: petitions,
+    pagination: response.meta?.pagination ?? {
+      page: 1,
+      pageSize,
+      pageCount: 1,
+      total: petitions.length,
+    },
+  };
+}
+
+export async function getPetitionBySlug(slug: string) {
+  const response = await strapiFetch<StrapiCollectionResponse<Petition>>(
+    "/api/petitions",
+    {
+      query: {
+        "populate[0]": "author",
+        "populate[1]": "author.avatar",
+        "populate[2]": "heroImage",
+        "populate[3]": "tags",
+        "populate[4]": "seo",
+        "populate[5]": "seo.metaImage",
+        "publicationState": "live",
+        "filters[slug][$eq]": slug,
+      },
+      revalidate: 3600, // Singole petizioni: cache 1 ora
+    },
+  );
+
+  const petition = response.data?.[0];
+  return petition?.attributes ?? petition ?? null;
+}
+
 export type {
   Show,
   VideoEpisode,
@@ -1085,6 +1210,7 @@ export type {
   DailyLink,
   Column,
   Article,
+  Petition,
   StrapiCollectionResponse,
   PaginationMeta,
 };

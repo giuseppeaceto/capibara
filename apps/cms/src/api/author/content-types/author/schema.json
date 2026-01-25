@@ -49,6 +49,12 @@
       "relation": "oneToMany",
       "target": "api::article.article",
       "mappedBy": "author"
+    },
+    "petitions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::petition.petition",
+      "mappedBy": "author"
     }
   }
 }
