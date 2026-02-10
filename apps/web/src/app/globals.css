@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Dark mode basato sulla classe .dark (gestita dal toggle tema in MainLayout) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
