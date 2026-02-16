@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google-cloud/translate": "^9.3.0",
+    "@vercel/analytics": "^1.6.1",
     "axios": "^1.6.2",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.555.0",
