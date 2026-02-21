@@ -932,9 +932,9 @@ export default function MainLayout({
           </div>
         </div>
 
-        {/* TICKER STRIP — fixed sotto l'header, nascosto su mobile */}
+        {/* TICKER STRIP — fixed sotto l'header */}
         {tickerItems && tickerItems.length > 0 && (
-          <div className={`pointer-events-none fixed top-[7.5rem] z-30 hidden sm:block ${isSidebarCollapsed ? 'left-16 lg:left-16' : 'left-0 lg:left-72'} right-0`}>
+          <div className={`pointer-events-none fixed top-[8rem] sm:top-[7.5rem] z-30 ${isSidebarCollapsed ? 'left-0 lg:left-16' : 'left-0 lg:left-72'} right-0`}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-24">
               <NewsTicker items={tickerItems} isDark={isDark} />
             </div>
@@ -942,7 +942,7 @@ export default function MainLayout({
         )}
 
         {/* SPACER: altezza ~ header + ticker */}
-        <div className={`${tickerItems && tickerItems.length > 0 ? 'h-40 sm:h-48 lg:h-52' : 'h-32 sm:h-36 lg:h-40'}`} />
+        <div className={`${tickerItems && tickerItems.length > 0 ? 'h-52 sm:h-48 lg:h-52' : 'h-36 sm:h-36 lg:h-40'}`} />
 
         {/* Contenuto principale, allineato al container dell'header */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-24">
