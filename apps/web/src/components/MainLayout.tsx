@@ -5,21 +5,16 @@ import {
   Archive,
   BadgeEuro,
   CalendarDays,
-  Cpu,
+  GraduationCap,
   Headphones,
   Home as HomeIcon,
-  List,
   Lock,
   Mail,
   Map,
-  MessageCircle,
   PlayCircle,
   Star,
-  Timer,
   Sun,
   Moon,
-  Users,
-  UserCircle,
   Menu,
   X,
   PanelLeftClose,
@@ -30,6 +25,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import NewsTicker, { type TickerItem } from "@/components/NewsTicker";
 
 type NavLink = {
   label: string;
@@ -137,14 +133,6 @@ const primaryNav: NavLink[] = [
     icon: Mail,
     href: "/newsroom",
   },
-  { label: "Feed", icon: List, href: "/feed" },
-  { 
-    label: "Articoli", 
-    icon: Timer, 
-    href: "/articoli",
-    color: "bg-indigo-500/20 border-indigo-500/50 text-white",
-    colorLight: "bg-indigo-100 border-indigo-500 text-indigo-900"
-  },
   { 
     label: "Podcast", 
     icon: Headphones, 
@@ -160,20 +148,26 @@ const primaryNav: NavLink[] = [
     colorLight: "bg-purple-100 border-purple-500 text-purple-900"
   },
   { 
-    label: "Petizioni", 
-    icon: FileSignature, 
-    href: "/petizioni",
-    color: "bg-orange-500/20 border-orange-500/50 text-white",
-    colorLight: "bg-orange-100 border-orange-500 text-orange-900"
-  },
-  { 
     label: "Eventi", 
     icon: CalendarDays, 
     href: "/eventi",
     color: "bg-emerald-500/20 border-emerald-500/50 text-white",
     colorLight: "bg-emerald-100 border-emerald-500 text-emerald-900"
   },
-  { label: "Archivio", icon: Archive, href: "/archivio" },
+  { 
+    label: "Petizioni", 
+    icon: FileSignature, 
+    href: "/petizioni",
+    color: "bg-orange-500/20 border-orange-500/50 text-white",
+    colorLight: "bg-orange-100 border-orange-500 text-orange-900"
+  },
+  {
+    label: "Corsi",
+    icon: GraduationCap,
+    href: "/corsi",
+    color: "bg-amber-500/20 border-amber-500/50 text-white",
+    colorLight: "bg-amber-100 border-amber-500 text-amber-900"
+  },
   {
     label: "Mappa dei conflitti",
     icon: Map,
@@ -186,10 +180,8 @@ const primaryNav: NavLink[] = [
 
 const utilityNav: NavLink[] = [
   { label: "Chi siamo", icon: CapibaraLogoIcon, href: "/chi-siamo" },
-  { label: "Redazione", icon: UserCircle, href: "/chi-siamo/redazione" },
-  { label: "Tecnologia", icon: Cpu, href: "/tecnologia" },
   { label: "Abbonamenti", icon: BadgeEuro, href: "/abbonamenti" },
-  { label: "Partner", icon: Users, href: "/partner" },
+  { label: "Archivio", icon: Archive, href: "/archivio" },
 ];
 
 const NavGroup = ({
@@ -333,8 +325,10 @@ const NavGroup = ({
 
 export default function MainLayout({
   children,
+  tickerItems,
 }: {
   children: React.ReactNode;
+  tickerItems?: TickerItem[];
 }) {
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -597,9 +591,11 @@ export default function MainLayout({
             <div className="flex items-center justify-between mb-3">
               <div className="space-y-3 flex-1">
                 <p className="flex flex-wrap gap-2">
-                  <span>Contattaci</span>
+                  <Link href="/chi-siamo/redazione" className="hover:text-zinc-300">Redazione</Link>
                   <span>•</span>
-                  <span>Diventa partner</span>
+                  <Link href="/partner" className="hover:text-zinc-300">Partner</Link>
+                  <span>•</span>
+                  <Link href="/tecnologia" className="hover:text-zinc-300">Tecnologia</Link>
                 </p>
                 <p className="flex flex-wrap gap-2">
                   <Link href="/privacy" className="hover:text-zinc-300">
@@ -609,6 +605,8 @@ export default function MainLayout({
                   <Link href="/termini" className="hover:text-zinc-300">
                     Termini
                   </Link>
+                  <span>•</span>
+                  <span>Contattaci</span>
                 </p>
               </div>
               <button
@@ -769,9 +767,11 @@ export default function MainLayout({
             </div>
             <div className="mt-4 space-y-3 border-t border-white/5 pt-4 text-xs text-zinc-500">
               <p className="flex flex-wrap gap-2">
-                <span>Contattaci</span>
+                <Link href="/chi-siamo/redazione" className="hover:text-zinc-300" onClick={() => setIsMobileMenuOpen(false)}>Redazione</Link>
                 <span>•</span>
-                <span>Diventa partner</span>
+                <Link href="/partner" className="hover:text-zinc-300" onClick={() => setIsMobileMenuOpen(false)}>Partner</Link>
+                <span>•</span>
+                <Link href="/tecnologia" className="hover:text-zinc-300" onClick={() => setIsMobileMenuOpen(false)}>Tecnologia</Link>
               </p>
               <p className="flex flex-wrap gap-2">
                 <Link href="/privacy" className="hover:text-zinc-300" onClick={() => setIsMobileMenuOpen(false)}>
@@ -781,6 +781,8 @@ export default function MainLayout({
                 <Link href="/termini" className="hover:text-zinc-300" onClick={() => setIsMobileMenuOpen(false)}>
                   Termini
                 </Link>
+                <span>•</span>
+                <span>Contattaci</span>
               </p>
             </div>
           </aside>
@@ -930,8 +932,17 @@ export default function MainLayout({
           </div>
         </div>
 
-        {/* SPACER: altezza ~ header, per evitare sovrapposizione nella posizione iniziale */}
-        <div className="h-32 sm:h-36 lg:h-40" />
+        {/* TICKER STRIP — fixed sotto l'header, nascosto su mobile */}
+        {tickerItems && tickerItems.length > 0 && (
+          <div className={`pointer-events-none fixed top-[7.5rem] z-30 hidden sm:block ${isSidebarCollapsed ? 'left-16 lg:left-16' : 'left-0 lg:left-72'} right-0`}>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-24">
+              <NewsTicker items={tickerItems} isDark={isDark} />
+            </div>
+          </div>
+        )}
+
+        {/* SPACER: altezza ~ header + ticker */}
+        <div className={`${tickerItems && tickerItems.length > 0 ? 'h-40 sm:h-48 lg:h-52' : 'h-32 sm:h-36 lg:h-40'}`} />
 
         {/* Contenuto principale, allineato al container dell'header */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-24">

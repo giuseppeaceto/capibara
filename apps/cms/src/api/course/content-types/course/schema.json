@@ -1,0 +1,97 @@
+{
+  "kind": "collectionType",
+  "collectionName": "courses",
+  "info": {
+    "singularName": "course",
+    "pluralName": "courses",
+    "displayName": "Course",
+    "description": "Corsi formativi gratuiti e premium con lezioni e quiz"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "content-manager": {
+      "visible": true
+    },
+    "content-type-builder": {
+      "visible": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true,
+      "description": "Breve descrizione del corso"
+    },
+    "body": {
+      "type": "richtext",
+      "description": "Descrizione estesa del corso"
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "level": {
+      "type": "enumeration",
+      "enum": ["base", "intermedio", "avanzato"],
+      "default": "base",
+      "required": true,
+      "description": "Livello di difficoltà del corso"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": ["giornalismo", "politica", "filosofia", "media", "diritti", "economia", "storia", "altro"],
+      "required": true,
+      "description": "Categoria tematica del corso"
+    },
+    "isPremium": {
+      "type": "boolean",
+      "default": false,
+      "description": "Se true, solo la prima lezione è gratuita"
+    },
+    "estimatedHours": {
+      "type": "integer",
+      "description": "Durata stimata del corso in ore"
+    },
+    "publishDate": {
+      "type": "datetime"
+    },
+    "isFeatured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Corso in evidenza"
+    },
+    "lessons": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::lesson.lesson",
+      "mappedBy": "course"
+    },
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::author.author"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag"
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
+  }
+}

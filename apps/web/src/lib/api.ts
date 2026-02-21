@@ -1455,6 +1455,180 @@ export async function extractExternalMetadata(url: string): Promise<{
   }
 }
 
+// ─── Courses & Lessons ───────────────────────────────────────────────
+
+type QuizQuestion = {
+  id: number;
+  question: string;
+  optionA: string;
+  optionB: string;
+  optionC?: string | null;
+  optionD?: string | null;
+  correctAnswer: "A" | "B" | "C" | "D";
+  explanation?: string | null;
+};
+
+export type Course = {
+  title: string;
+  slug: string;
+  description?: string | null;
+  body?: string | null;
+  level: "base" | "intermedio" | "avanzato";
+  category: string;
+  isPremium?: boolean;
+  isFeatured?: boolean;
+  estimatedHours?: number | null;
+  publishDate?: string | null;
+  heroImage?: {
+    data: {
+      attributes: {
+        url: string;
+        alternativeText?: string | null;
+      };
+    };
+  } | null;
+  author?: {
+    data: {
+      attributes: Author;
+    } | null;
+  } | null;
+  lessons?: {
+    data: Array<{
+      id: number;
+      attributes: Lesson;
+    }>;
+  } | null;
+  tags?: {
+    data: Array<{
+      attributes: {
+        name: string;
+        slug: string;
+      };
+    }>;
+  } | null;
+  seo?: SeoComponent | null;
+};
+
+export type Lesson = {
+  title: string;
+  slug: string;
+  body?: string | null;
+  videoUrl?: string | null;
+  order: number;
+  durationMinutes?: number | null;
+  isFree?: boolean;
+  course?: {
+    data: {
+      attributes: Pick<Course, "title" | "slug">;
+    } | null;
+  };
+  quiz?: QuizQuestion[] | null;
+};
+
+export { type QuizQuestion };
+
+export async function getCourses(page = 1, pageSize = 12) {
+  const response = await strapiFetch<StrapiPaginatedResponse<Course>>(
+    "/api/courses",
+    {
+      query: {
+        "populate[0]": "heroImage",
+        "populate[1]": "author",
+        "populate[2]": "author.avatar",
+        "populate[3]": "tags",
+        "populate[4]": "lessons",
+        "publicationState": "live",
+        "pagination[page]": page,
+        "pagination[pageSize]": pageSize,
+        "sort[0]": "publishDate:desc",
+      },
+      revalidate: 300,
+    },
+  );
+
+  const courses = (response.data?.map((item) => {
+    if (item.attributes) return item.attributes;
+    return item;
+  }) ?? []) as Course[];
+
+  return {
+    data: courses,
+    pagination: response.meta?.pagination ?? {
+      page: 1,
+      pageSize,
+      pageCount: 1,
+      total: courses.length,
+    },
+  };
+}
+
+export async function getLatestCourses(limit = 6) {
+  const response = await strapiFetch<StrapiCollectionResponse<Course>>(
+    "/api/courses",
+    {
+      query: {
+        "populate[0]": "heroImage",
+        "populate[1]": "author",
+        "populate[2]": "author.avatar",
+        "populate[3]": "tags",
+        "populate[4]": "lessons",
+        "publicationState": "live",
+        "pagination[pageSize]": limit,
+        "sort[0]": "publishDate:desc",
+      },
+      revalidate: 300,
+    },
+  );
+
+  return (response.data?.map((item) => {
+    if (item.attributes) return item.attributes;
+    return item;
+  }) ?? []) as Course[];
+}
+
+export async function getCourseBySlug(slug: string) {
+  const response = await strapiFetch<StrapiCollectionResponse<Course>>(
+    "/api/courses",
+    {
+      query: {
+        "populate[0]": "heroImage",
+        "populate[1]": "author",
+        "populate[2]": "author.avatar",
+        "populate[3]": "tags",
+        "populate[4]": "lessons",
+        "populate[5]": "lessons.quiz",
+        "populate[6]": "seo",
+        "populate[7]": "seo.metaImage",
+        "publicationState": "live",
+        "filters[slug][$eq]": slug,
+      },
+      revalidate: 3600,
+    },
+  );
+
+  const course = response.data?.[0];
+  return course?.attributes ?? course ?? null;
+}
+
+export async function getLessonBySlug(courseSlug: string, lessonSlug: string) {
+  const response = await strapiFetch<StrapiCollectionResponse<Lesson>>(
+    "/api/lessons",
+    {
+      query: {
+        "populate[0]": "course",
+        "populate[1]": "quiz",
+        "publicationState": "live",
+        "filters[slug][$eq]": lessonSlug,
+        "filters[course][slug][$eq]": courseSlug,
+      },
+      revalidate: 3600,
+    },
+  );
+
+  const lesson = response.data?.[0];
+  return lesson?.attributes ?? lesson ?? null;
+}
+
 // Authors
 export async function getAuthors() {
   const response = await strapiFetch<StrapiCollectionResponse<Author>>(

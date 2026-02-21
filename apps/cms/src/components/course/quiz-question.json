@@ -1,0 +1,43 @@
+{
+  "collectionName": "components_course_quiz_questions",
+  "info": {
+    "displayName": "QuizQuestion",
+    "description": "Domanda a risposta multipla per i quiz dei corsi"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "text",
+      "required": true,
+      "description": "Testo della domanda"
+    },
+    "optionA": {
+      "type": "string",
+      "required": true,
+      "description": "Prima opzione di risposta"
+    },
+    "optionB": {
+      "type": "string",
+      "required": true,
+      "description": "Seconda opzione di risposta"
+    },
+    "optionC": {
+      "type": "string",
+      "description": "Terza opzione di risposta (opzionale)"
+    },
+    "optionD": {
+      "type": "string",
+      "description": "Quarta opzione di risposta (opzionale)"
+    },
+    "correctAnswer": {
+      "type": "enumeration",
+      "enum": ["A", "B", "C", "D"],
+      "required": true,
+      "description": "Lettera della risposta corretta"
+    },
+    "explanation": {
+      "type": "text",
+      "description": "Spiegazione della risposta corretta mostrata dopo il quiz"
+    }
+  }
+}

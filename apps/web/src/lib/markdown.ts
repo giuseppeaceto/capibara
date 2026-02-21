@@ -1,25 +1,19 @@
-// Simple Markdown-to-HTML helper mainly for bold/italic, quote, headings e a capo.
-// Se il testo contiene già HTML, applichiamo comunque le trasformazioni markdown di base
+// Markdown-to-HTML helper for rich text content.
+// Supports: headings, bold, italic, links, images, blockquotes,
+// unordered/ordered lists, horizontal rules, and paragraphs.
 
 export function markdownToHtml(input: string): string {
   if (!input) return "";
 
-  // Normalizza i line ending (CRLF → LF) per avere regex coerenti
   const text = input.replace(/\r\n/g, "\n").trim();
 
   let processed = text;
 
-  // Controlliamo se il contenuto contiene già tag HTML
   const hasHtmlTags = /<[a-z][\s\S]*>/i.test(text);
-
-  // Controlliamo se contiene già tag di blocco (struttura)
   const hasBlockTags = /<\/?(p|div|h[1-6]|ul|ol|li)(\s[^>]*)?>/i.test(text);
-
-  // Controlliamo se contiene già blockquote
   const hasBlockquotes = /<\/?blockquote(\s[^>]*)?>/i.test(text);
 
   if (hasHtmlTags && hasBlockTags) {
-    // Se ha già struttura HTML completa, applichiamo solo trasformazioni inline
     processed = processed.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
     processed = processed.replace(/\*(.+?)\*/g, "<em>$1</em>");
     processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label, url) => {
@@ -28,7 +22,6 @@ export function markdownToHtml(input: string): string {
       return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeLabel}</a>`;
     });
 
-    // Gestiamo le quote markdown solo se non ci sono già blockquote HTML
     if (!hasBlockquotes) {
       processed = processed.replace(/^>\s*(.+)$/gm, "<blockquote>$1</blockquote>");
     }
@@ -36,80 +29,94 @@ export function markdownToHtml(input: string): string {
     return processed;
   }
 
-  // Se non ha struttura HTML, o ha solo tag inline, applichiamo tutte le trasformazioni markdown
-
-  // Immagini: ![alt](url)
+  // Images: ![alt](url)
   processed = processed.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_match, alt, url) => {
     const safeAlt = String(alt ?? "").replace(/"/g, "&quot;");
     const safeUrl = String(url ?? "").replace(/"/g, "&quot;");
     return `<img src="${safeUrl}" alt="${safeAlt}" />`;
   });
 
-  // Link: [testo](url)
+  // Links: [text](url)
   processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label, url) => {
     const safeLabel = String(label ?? "");
     const safeUrl = String(url ?? "").replace(/"/g, "&quot;");
     return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeLabel}</a>`;
   });
 
-  // Headings Markdown a inizio riga: #, ##, ### ... con o senza spazio
+  // Headings: # … ######
   processed = processed.replace(/^\s*(#{1,6})\s*(.+)$/gm, (_m, hashes: string, title: string) => {
-    const level = hashes.length;
-    const safeLevel = Math.min(Math.max(level, 1), 6);
-    return `<h${safeLevel}>${title.trim()}</h${safeLevel}>`;
+    const level = Math.min(Math.max(hashes.length, 1), 6);
+    return `<h${level}>${title.trim()}</h${level}>`;
   });
 
-  // Quote: gestisci righe che iniziano con > (con o senza spazio)
-  // Prima elabora le quote multiline
-  const lines = processed.split('\n');
-  const result = [];
+  // Horizontal rules: ---, ***, ___
+  processed = processed.replace(/^(?:[-*_]){3,}\s*$/gm, "<hr />");
+
+  // Process lines: blockquotes, lists, paragraphs
+  const lines = processed.split("\n");
+  const result: string[] = [];
   let i = 0;
 
   while (i < lines.length) {
     const line = lines[i];
 
-    if (line.trim().startsWith('>')) {
-      // Inizia una blockquote
-      let blockquoteContent = line.replace(/^>\s*/, '');
+    // Blockquotes
+    if (line.trim().startsWith(">")) {
+      let bqContent = line.replace(/^>\s*/, "");
       i++;
-
-      // Raccogli tutte le righe consecutive della blockquote
-      while (i < lines.length && lines[i].trim().startsWith('>')) {
-        blockquoteContent += '\n' + lines[i].replace(/^>\s*/, '');
+      while (i < lines.length && lines[i].trim().startsWith(">")) {
+        bqContent += "\n" + lines[i].replace(/^>\s*/, "");
         i++;
       }
-
-      result.push(`<blockquote>${blockquoteContent}</blockquote>`);
-    } else {
-      result.push(line);
-      i++;
+      result.push(`<blockquote>${bqContent}</blockquote>`);
+      continue;
     }
+
+    // Unordered list (- item or * item)
+    if (/^\s*[-*]\s+/.test(line)) {
+      const items: string[] = [];
+      while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) {
+        items.push(lines[i].replace(/^\s*[-*]\s+/, ""));
+        i++;
+      }
+      result.push(`<ul>${items.map((it) => `<li>${it}</li>`).join("")}</ul>`);
+      continue;
+    }
+
+    // Ordered list (1. item)
+    if (/^\s*\d+[.)]\s+/.test(line)) {
+      const items: string[] = [];
+      while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) {
+        items.push(lines[i].replace(/^\s*\d+[.)]\s+/, ""));
+        i++;
+      }
+      result.push(`<ol>${items.map((it) => `<li>${it}</li>`).join("")}</ol>`);
+      continue;
+    }
+
+    result.push(line);
+    i++;
   }
 
-  processed = result.join('\n');
+  processed = result.join("\n");
 
-  // Bold **testo**
+  // Bold **text**
   processed = processed.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-
-  // Italic *testo*
+  // Italic *text*
   processed = processed.replace(/\*(.+?)\*/g, "<em>$1</em>");
 
-  // Suddividi in paragrafi su doppio a capo SOLO per blocchi che non sono già tag block
+  // Split into paragraphs on double newline
   const paragraphs = processed.split(/\n{2,}/).map((block) => {
     const trimmed = block.trim();
-    // Mantieni una riga vuota visibile come spazio verticale
-    if (!trimmed) return "<p><br /></p>";
-
-    // Se il blocco inizia già con un tag di tipo block, lo lasciamo così
-    if (/^<(h[1-6]|p|ul|ol|li|blockquote)/i.test(trimmed)) {
+    if (!trimmed) return "";
+    if (/^<(h[1-6]|p|ul|ol|li|blockquote|hr|img)/i.test(trimmed)) {
       return trimmed;
     }
-
     const withBr = trimmed.replace(/\n/g, "<br />");
     return `<p>${withBr}</p>`;
   });
 
-  return paragraphs.join("\n");
+  return paragraphs.filter(Boolean).join("\n");
 }
 
 

@@ -30,12 +30,60 @@ body {
   min-height: 100vh;
 }
 
-[data-theme="dark"] .section-heading {
-  color: #f9fafb; /* near-white */
+/* News ticker — continuous horizontal scroll */
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
+.news-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 80s linear infinite;
+  will-change: transform;
+}
+
+.news-ticker:hover .news-ticker-track,
+.news-ticker:focus-within .news-ticker-track {
+  animation-play-state: paused;
+}
+
+.ticker-fade-mask {
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-ticker-track {
+    animation: none;
+  }
+}
+
+/* Typographic scale — creates a clear visual pyramid: Display >> Section >> Card */
+.type-display {
+  font-size: clamp(1.875rem, 4vw + 0.5rem, 3.75rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+.type-section {
+  font-size: clamp(1.125rem, 1.5vw + 0.5rem, 1.25rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+[data-theme="dark"] .type-display,
+[data-theme="dark"] .type-section,
+[data-theme="dark"] .section-heading {
+  color: #f9fafb;
+}
+
+[data-theme="light"] .type-display,
+[data-theme="light"] .type-section,
 [data-theme="light"] .section-heading {
-  color: #0f172a; /* slate-900 */
+  color: #0f172a;
 }
 
 /* Hero gradient per tema */
@@ -1038,4 +1086,316 @@ body {
   @apply bg-zinc-100;
 }
 
+/* ─── Lesson prose — rich typography for course content ────────────── */
 
+.lesson-prose {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  max-width: 72ch;
+}
+
+[data-theme="dark"] .lesson-prose {
+  color: #d4d4d8; /* zinc-300 */
+}
+
+[data-theme="light"] .lesson-prose {
+  color: #374151; /* gray-700 */
+}
+
+.lesson-prose h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(161, 161, 170, 0.15);
+}
+
+[data-theme="dark"] .lesson-prose h2 {
+  color: #f9fafb;
+}
+
+[data-theme="light"] .lesson-prose h2 {
+  color: #0f172a;
+  border-bottom-color: rgba(15, 23, 42, 0.08);
+}
+
+.lesson-prose h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .lesson-prose h3 {
+  color: #e5e7eb;
+}
+
+[data-theme="light"] .lesson-prose h3 {
+  color: #1e293b;
+}
+
+.lesson-prose h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 1.5rem;
+  margin-bottom: 0.4rem;
+}
+
+[data-theme="dark"] .lesson-prose h4 {
+  color: #d4d4d8;
+}
+
+[data-theme="light"] .lesson-prose h4 {
+  color: #334155;
+}
+
+.lesson-prose p {
+  margin-bottom: 1.25rem;
+}
+
+.lesson-prose strong {
+  font-weight: 650;
+}
+
+[data-theme="dark"] .lesson-prose strong {
+  color: #f4f4f5;
+}
+
+[data-theme="light"] .lesson-prose strong {
+  color: #0f172a;
+}
+
+.lesson-prose a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+[data-theme="dark"] .lesson-prose a {
+  color: #fbbf24;
+}
+
+[data-theme="dark"] .lesson-prose a:hover {
+  color: #fcd34d;
+}
+
+[data-theme="light"] .lesson-prose a {
+  color: #d97706;
+}
+
+[data-theme="light"] .lesson-prose a:hover {
+  color: #b45309;
+}
+
+.lesson-prose blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid #f59e0b;
+  border-radius: 0 0.75rem 0.75rem 0;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+[data-theme="dark"] .lesson-prose blockquote {
+  background: rgba(245, 158, 11, 0.06);
+  color: #a1a1aa;
+}
+
+[data-theme="light"] .lesson-prose blockquote {
+  background: rgba(245, 158, 11, 0.06);
+  color: #6b7280;
+}
+
+.lesson-prose ul,
+.lesson-prose ol {
+  margin: 1.25rem 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.lesson-prose ul li,
+.lesson-prose ol li {
+  position: relative;
+  padding-left: 1.75rem;
+  margin-bottom: 0.6rem;
+  line-height: 1.7;
+}
+
+.lesson-prose ul li::before {
+  content: "";
+  position: absolute;
+  left: 0.25rem;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #f59e0b;
+}
+
+.lesson-prose ol {
+  counter-reset: lesson-ol;
+}
+
+.lesson-prose ol li {
+  counter-increment: lesson-ol;
+}
+
+.lesson-prose ol li::before {
+  content: counter(lesson-ol) ".";
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #f59e0b;
+}
+
+.lesson-prose hr {
+  margin: 2.5rem 0;
+  border: none;
+  height: 1px;
+}
+
+[data-theme="dark"] .lesson-prose hr {
+  background: linear-gradient(to right, transparent, rgba(161, 161, 170, 0.2), transparent);
+}
+
+[data-theme="light"] .lesson-prose hr {
+  background: linear-gradient(to right, transparent, rgba(15, 23, 42, 0.1), transparent);
+}
+
+.lesson-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin: 2rem auto;
+  display: block;
+}
+
+/* First paragraph after h2 gets a subtle lead style */
+.lesson-prose h2 + p {
+  font-size: 1.1rem;
+  line-height: 1.85;
+}
+
+[data-theme="dark"] .lesson-prose h2 + p {
+  color: #a1a1aa;
+}
+
+[data-theme="light"] .lesson-prose h2 + p {
+  color: #6b7280;
+}
+
+/* ─── Courses ──────────────────────────────────────────────────────── */
+
+.eyebrow--course::before {
+  background-color: #f59e0b; /* amber-500 */
+}
+
+/* Course card colored borders - Amber */
+[data-theme="dark"] .content-card[data-border-color="amber-500"] {
+  border-color: rgb(245 158 11 / 0.5);
+}
+
+[data-theme="light"] .content-card[data-border-color="amber-500"] {
+  border-color: rgb(245 158 11 / 0.8);
+}
+
+/* Course level badge */
+[data-theme="dark"] .course-level-badge {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
+}
+
+[data-theme="light"] .course-level-badge {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
+}
+
+.course-level-badge[data-level="base"] {
+  @apply bg-emerald-500/15 text-emerald-400;
+}
+
+[data-theme="light"] .course-level-badge[data-level="base"] {
+  @apply bg-emerald-100 text-emerald-700;
+}
+
+.course-level-badge[data-level="intermedio"] {
+  @apply bg-amber-500/15 text-amber-400;
+}
+
+[data-theme="light"] .course-level-badge[data-level="intermedio"] {
+  @apply bg-amber-100 text-amber-700;
+}
+
+.course-level-badge[data-level="avanzato"] {
+  @apply bg-red-500/15 text-red-400;
+}
+
+[data-theme="light"] .course-level-badge[data-level="avanzato"] {
+  @apply bg-red-100 text-red-700;
+}
+
+/* Lesson sidebar item */
+[data-theme="dark"] .lesson-item {
+  @apply flex items-center gap-3 rounded-xl border border-white/5 bg-zinc-900/50 px-4 py-3 text-sm transition hover:border-white/20 hover:bg-zinc-800/80;
+}
+
+[data-theme="light"] .lesson-item {
+  @apply flex items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm transition hover:border-zinc-400 hover:bg-zinc-50;
+}
+
+[data-theme="dark"] .lesson-item-active {
+  @apply flex items-center gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm font-medium text-white;
+}
+
+[data-theme="light"] .lesson-item-active {
+  @apply flex items-center gap-3 rounded-xl border border-amber-500 bg-amber-50 px-4 py-3 text-sm font-medium text-zinc-900;
+}
+
+/* Quiz card */
+[data-theme="dark"] .quiz-card {
+  @apply rounded-2xl border border-white/10 bg-zinc-900/60 p-6;
+}
+
+[data-theme="light"] .quiz-card {
+  @apply rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm;
+}
+
+[data-theme="dark"] .quiz-option {
+  @apply cursor-pointer rounded-xl border border-white/10 bg-zinc-800/50 px-4 py-3 text-sm transition hover:border-white/30 hover:bg-zinc-800;
+}
+
+[data-theme="light"] .quiz-option {
+  @apply cursor-pointer rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm transition hover:border-zinc-400 hover:bg-zinc-100;
+}
+
+.quiz-option-correct {
+  @apply border-emerald-500/60 bg-emerald-500/10;
+}
+
+[data-theme="light"] .quiz-option-correct {
+  @apply border-emerald-500 bg-emerald-50;
+}
+
+.quiz-option-wrong {
+  @apply border-red-500/60 bg-red-500/10;
+}
+
+[data-theme="light"] .quiz-option-wrong {
+  @apply border-red-500 bg-red-50;
+}
+
+/* Progress bar */
+[data-theme="dark"] .progress-bar-bg {
+  @apply h-2 w-full rounded-full bg-zinc-800;
+}
+
+[data-theme="light"] .progress-bar-bg {
+  @apply h-2 w-full rounded-full bg-zinc-200;
+}
+
+.progress-bar-fill {
+  @apply h-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-500;
+}
