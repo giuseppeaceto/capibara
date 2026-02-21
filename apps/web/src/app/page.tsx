@@ -93,7 +93,7 @@ export default async function Home() {
     getLatestPodcastEpisodes(4),
     getPremiumNewsletterIssues(3),
     getLatestArticles(4),
-    getLatestRubricaLinks(10), // Recupera più link per assicurare diversità tra rubriche
+    getLatestRubricaLinks(20), // Recupera molti link per garantire sempre 4 card in homepage
     getRecentlyUpdatedColumns(3),
   ]);
 
@@ -104,11 +104,10 @@ export default async function Home() {
   const validPremiumLetters = premiumLetters.filter((ep) => ep != null);
   const validArticles = articles.filter((art) => art != null);
 
-  // Diversifica i link delle rubriche per assicurarsi che provengano da rubriche diverse
+  // Diversifica i link delle rubriche: priorità a rubriche diverse, ma riempie sempre 4 slot
   const diversifiedRubricaLinks = (() => {
     if (latestRubricaLinks.length === 0) return [];
-    
-    // Raggruppa i link per rubrica
+
     const linksByRubrica = new Map<string, typeof latestRubricaLinks>();
     latestRubricaLinks.forEach((link) => {
       const rubricaKey = link.column?.slug ?? link.column?.title ?? "unknown";
@@ -118,36 +117,26 @@ export default async function Home() {
       linksByRubrica.get(rubricaKey)!.push(link);
     });
 
-    // Prendi al massimo 1 link per rubrica, fino a raggiungere 4 link totali
     const result: typeof latestRubricaLinks = [];
     const maxLinks = 4;
     const rubricas = Array.from(linksByRubrica.keys());
-    
-    // Prima passata: 1 link per rubrica
-    for (const rubricaKey of rubricas) {
-      if (result.length >= maxLinks) break;
-      const links = linksByRubrica.get(rubricaKey)!;
-      if (links.length > 0) {
-        result.push(links[0]);
-      }
-    }
-    
-    // Se non abbiamo raggiunto il limite, aggiungiamo un secondo link dalle rubriche che ne hanno più di uno
-    if (result.length < maxLinks) {
+
+    // Round-robin: ad ogni passata prende il prossimo link da ogni rubrica
+    let round = 0;
+    while (result.length < maxLinks) {
+      let addedThisRound = false;
       for (const rubricaKey of rubricas) {
         if (result.length >= maxLinks) break;
         const links = linksByRubrica.get(rubricaKey)!;
-        // Conta quanti link di questa rubrica abbiamo già aggiunto
-        const alreadyAdded = result.filter(link => 
-          (link.column?.slug ?? link.column?.title ?? "unknown") === rubricaKey
-        ).length;
-        // Se c'è ancora spazio e questa rubrica ha più link, aggiungine uno
-        if (alreadyAdded === 1 && links.length > 1) {
-          result.push(links[1]);
+        if (round < links.length) {
+          result.push(links[round]);
+          addedThisRound = true;
         }
       }
+      if (!addedThisRound) break;
+      round++;
     }
-    
+
     return result.slice(0, maxLinks);
   })();
 
@@ -203,6 +192,69 @@ export default async function Home() {
 
   return (
     <MainLayout tickerItems={tickerItems}>
+      {/* ═══════════════════════════════════════════════════════════════
+          SEZIONE 0 — DALLE RUBRICHE (griglia compatta sopra la hero)
+          Mini-card colorate con gli ultimi link dalle rubriche.
+          ═══════════════════════════════════════════════════════════════ */}
+      {diversifiedRubricaLinks.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+                Dalle rubriche
+              </h2>
+            </div>
+            <Link href="/newsroom" className="section-link text-xs font-medium">
+              Tutte →
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {diversifiedRubricaLinks.map((link, index) => {
+              const columnTitle = link.column?.title || "Rubrica";
+              const rubricaKey = link.column?.slug ?? columnTitle;
+              const borderColor = getRubricaBorderColor(rubricaKey);
+
+              return (
+                <a
+                  key={`rub-${link.column?.slug}-${index}`}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="content-box group flex flex-col justify-between gap-3 p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
+                  style={
+                    borderColor
+                      ? { borderColor, borderWidth: "2px" }
+                      : undefined
+                  }
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        className="text-[10px] font-bold uppercase tracking-wider line-clamp-1"
+                        style={borderColor ? { color: borderColor } : undefined}
+                      >
+                        {columnTitle}
+                      </span>
+                      <span className="flex-shrink-0 text-zinc-300 dark:text-zinc-600 group-hover:text-zinc-500 dark:group-hover:text-zinc-400 transition-colors text-xs">
+                        ↗
+                      </span>
+                    </div>
+                    <h3 className="text-sm font-semibold leading-snug line-clamp-2 text-zinc-900 dark:text-zinc-100">
+                      {link.label}
+                    </h3>
+                  </div>
+                  {link.publishDate && (
+                    <p className="text-[10px] uppercase tracking-wide text-zinc-500">
+                      {formatDate(link.publishDate)}
+                    </p>
+                  )}
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {/* ═══════════════════════════════════════════════════════════════
           SEZIONE 1 — HERO ARTICLE
           L'articolo più recente, full-bleed, senza header di sezione.
@@ -470,7 +522,7 @@ export default async function Home() {
           SEZIONE 4 — NEWSROOM (rubriche cover cards + link recenti)
           Fusione delle due vecchie sezioni rubriche.
           ═══════════════════════════════════════════════════════════════ */}
-      {(recentlyUpdatedColumns.length > 0 || diversifiedRubricaLinks.length > 0) && (
+      {recentlyUpdatedColumns.length > 0 && (
         <section className="space-y-5">
           <div className="flex items-center justify-between">
             <div>
@@ -552,59 +604,6 @@ export default async function Home() {
             </div>
           )}
 
-          {diversifiedRubricaLinks.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {diversifiedRubricaLinks.map((link, index) => {
-                const columnTitle = link.column?.title || "Rubrica";
-                const rubricaKey = link.column?.slug ?? columnTitle;
-                const borderColor = getRubricaBorderColor(rubricaKey);
-
-                return (
-                  <article
-                    key={`${link.column?.slug}-${index}`}
-                    className="content-box p-4 space-y-3 transition-all duration-200 group min-w-0 hover:border-zinc-900 dark:hover:border-zinc-100"
-                    style={
-                      borderColor
-                        ? { borderColor, borderWidth: "2px" }
-                        : undefined
-                    }
-                  >
-                    <div className="space-y-2">
-                      <div className="text-[10px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 line-clamp-1">
-                        {columnTitle}
-                      </div>
-                      <h3 className="font-bold text-base leading-tight">
-                        <a
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:underline decoration-2 underline-offset-2 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors line-clamp-2"
-                        >
-                          {link.label}
-                        </a>
-                      </h3>
-                      {link.description && (
-                        <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-2">
-                          {link.description}
-                        </p>
-                      )}
-                    </div>
-                    <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800">
-                      <a
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1"
-                      >
-                        Leggi
-                        <span className="text-xs">→</span>
-                      </a>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
         </section>
       )}
 
