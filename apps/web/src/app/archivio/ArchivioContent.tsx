@@ -28,7 +28,7 @@ type RubricaLink = {
   label: string;
   description?: string;
   url: string;
-  publishDate: Date | null;
+  publishDate: Date | string | null;
   column: Column;
   author: any;
 };
@@ -200,17 +200,24 @@ export function ArchivioContent({
       slug: column.slug,
       type: "column" as const,
     })),
-    ...initialRubricaLinks.map((link, index) => ({
-      id: `rubrica-link-${index}-${link.url || link.label}`,
-      title: link.label,
-      isoDate: link.publishDate ? link.publishDate.toISOString() : null,
-      date: link.publishDate ? formatDate(link.publishDate.toISOString()) : "",
-      summary: link.description ?? "",
-      tag: "Rubrica",
-      locked: false,
-      slug: link.url, // Usiamo l'URL come slug per i link esterni
-      type: "rubrica-link" as const,
-    })),
+    ...initialRubricaLinks.map((link, index) => {
+      const isoDate = link.publishDate
+        ? typeof link.publishDate === "string"
+          ? link.publishDate
+          : link.publishDate.toISOString()
+        : null;
+      return {
+        id: `rubrica-link-${index}-${link.url || link.label}`,
+        title: link.label,
+        isoDate,
+        date: isoDate ? formatDate(isoDate) : "",
+        summary: link.description ?? "",
+        tag: "Rubrica",
+        locked: false,
+        slug: link.url,
+        type: "rubrica-link" as const,
+      };
+    }),
   ].sort(sortByDateDesc);
 
   const searchUnifiedList: UnifiedItem[] | null = results
@@ -270,17 +277,24 @@ export function ArchivioContent({
           slug: column.slug,
           type: "column" as const,
         })) || []),
-        ...(results.rubricaLinks?.map((link, index) => ({
-          id: `search-rubrica-link-${index}-${link.url || link.label}`,
-          title: link.label,
-          isoDate: link.publishDate ? link.publishDate.toISOString() : null,
-          date: link.publishDate ? formatDate(link.publishDate.toISOString()) : "",
-          summary: link.description ?? "",
-          tag: "Rubrica",
-          locked: false,
-          slug: link.url,
-          type: "rubrica-link" as const,
-        })) || []),
+        ...(results.rubricaLinks?.map((link, index) => {
+          const isoDate = link.publishDate
+            ? typeof link.publishDate === "string"
+              ? link.publishDate
+              : link.publishDate.toISOString()
+            : null;
+          return {
+            id: `search-rubrica-link-${index}-${link.url || link.label}`,
+            title: link.label,
+            isoDate,
+            date: isoDate ? formatDate(isoDate) : "",
+            summary: link.description ?? "",
+            tag: "Rubrica",
+            locked: false,
+            slug: link.url,
+            type: "rubrica-link" as const,
+          };
+        }) || []),
       ].sort(sortByDateDesc)
     : null;
 
