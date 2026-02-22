@@ -21,6 +21,7 @@ import {
   PanelLeftOpen,
   FileSignature,
   Search,
+  Newspaper,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -253,6 +254,13 @@ const navSections: NavSection[] = [
     title: "Contenuti",
     links: [
       { label: "Newsroom", icon: Mail, href: "/newsroom" },
+      {
+        label: "Articoli",
+        icon: Newspaper,
+        href: "/articoli",
+        color: "bg-teal-500/20 border-teal-500/50 text-white",
+        colorLight: "bg-teal-100 border-teal-500 text-teal-900",
+      },
       {
         label: "Podcast",
         icon: Headphones,
