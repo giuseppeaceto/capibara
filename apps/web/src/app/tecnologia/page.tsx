@@ -30,7 +30,7 @@ export default function TecnologiaPage() {
           <p className="body-text-lg">
             Vogliamo che i nostri strumenti digitali siano coerenti con quello
             che raccontiamo: conflitti, diritti, lavoro, clima, mutualismo. Per
-            questo proviamo a costruire, per quanto possibile, un ecosistema
+            questo proviamo a costruire, per quanto possibile, pun ecosistema
             che non scarichi costi sociali, ambientali o militari su altre
             persone, altri territori, altri corpi.
           </p>

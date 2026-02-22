@@ -91,7 +91,7 @@ export default ({ env }) => {
     },
     postgres: {
       connection: postgresConnection,
-      pool: { min: env.int('DATABASE_POOL_MIN', 2), max: env.int('DATABASE_POOL_MAX', 10) },
+      pool: { min: env.int('DATABASE_POOL_MIN', 0), max: env.int('DATABASE_POOL_MAX', 3) },
     },
     sqlite: {
       connection: {
