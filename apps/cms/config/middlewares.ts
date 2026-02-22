@@ -18,7 +18,6 @@ export default [
   {
     name: 'strapi::cors',
     config: {
-      enabled: true,
       origin: [
         process.env.FRONTEND_URL || 'http://localhost:3000',
         process.env.EDITOR_URL || 'http://localhost:3001',
