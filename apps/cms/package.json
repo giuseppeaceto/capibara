@@ -16,10 +16,10 @@
   },
   "dependencies": {
     "@strapi-community/plugin-seo": "^2.1.1",
-    "@strapi/plugin-cloud": "5.33.1",
-    "@strapi/plugin-users-permissions": "5.33.1",
+    "@strapi/plugin-cloud": "5.36.1",
+    "@strapi/plugin-users-permissions": "5.36.1",
     "@strapi/provider-upload-cloudinary": "^5.33.1",
-    "@strapi/strapi": "5.33.1",
+    "@strapi/strapi": "5.36.1",
     "cloudinary": "^2.8.0",
     "csv-parser": "^3.2.0",
     "googleapis": "^170.0.0",
