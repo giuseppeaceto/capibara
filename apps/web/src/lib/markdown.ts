@@ -9,17 +9,29 @@ export function markdownToHtml(input: string): string {
 
   let processed = text;
 
+  // Apply bold/italic formatting, avoiding modifications inside HTML tags
+  const applyInlineFormatting = (input: string): string => {
+    return input.replace(/(<[^>]+>|[^<]+)/g, (segment) => {
+      // Leave HTML tags untouched
+      if (segment.startsWith("<") && segment.endsWith(">")) {
+        return segment;
+      }
+      let out = segment;
+      // Bold **text** or __text__
+      out = out.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+      out = out.replace(/__(.+?)__/g, "<strong>$1</strong>");
+      // Italic *text* or _text_
+      out = out.replace(/\*(.+?)\*/g, "<em>$1</em>");
+      out = out.replace(/_(.+?)_/g, "<em>$1</em>");
+      return out;
+    });
+  };
+
   const hasHtmlTags = /<[a-z][\s\S]*>/i.test(text);
   const hasBlockTags = /<\/?(p|div|h[1-6]|ul|ol|li)(\s[^>]*)?>/i.test(text);
   const hasBlockquotes = /<\/?blockquote(\s[^>]*)?>/i.test(text);
 
   if (hasHtmlTags && hasBlockTags) {
-    // Bold / italic with asterisks
-    processed = processed.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-    processed = processed.replace(/\*(.+?)\*/g, "<em>$1</em>");
-    // Bold / italic with underscores
-    processed = processed.replace(/__(.+?)__/g, "<strong>$1</strong>");
-    processed = processed.replace(/_(.+?)_/g, "<em>$1</em>");
     processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label, url) => {
       const safeLabel = String(label ?? "");
       const safeUrl = String(url ?? "").replace(/"/g, "&quot;");
@@ -30,7 +42,8 @@ export function markdownToHtml(input: string): string {
       processed = processed.replace(/^>\s*(.+)$/gm, "<blockquote>$1</blockquote>");
     }
 
-    return processed;
+    // Apply inline formatting outside of HTML tags
+    return applyInlineFormatting(processed);
   }
 
   // Images: ![alt](url)
@@ -104,12 +117,8 @@ export function markdownToHtml(input: string): string {
 
   processed = result.join("\n");
 
-  // Bold **text** or __text__
-  processed = processed.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-  processed = processed.replace(/__(.+?)__/g, "<strong>$1</strong>");
-  // Italic *text* or _text_
-  processed = processed.replace(/\*(.+?)\*/g, "<em>$1</em>");
-  processed = processed.replace(/_(.+?)_/g, "<em>$1</em>");
+  // Apply inline formatting (bold/italic), skipping HTML tags
+  processed = applyInlineFormatting(processed);
 
   // Split into paragraphs on double newline
   const paragraphs = processed.split(/\n{2,}/).map((block) => {
