@@ -808,11 +808,18 @@ body {
   font-size: 1.25em !important;
 }
 
-.article-prose ul,
+.article-prose ul {
+  margin-top: 1.25em !important;
+  margin-bottom: 1.25em !important;
+  padding-left: 1.625em !important;
+  list-style-type: disc !important;
+}
+
 .article-prose ol {
   margin-top: 1.25em !important;
   margin-bottom: 1.25em !important;
   padding-left: 1.625em !important;
+  list-style-type: decimal !important;
 }
 
 .article-prose li {
